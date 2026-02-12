@@ -3,187 +3,101 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>XTARMAI App Download</title>
-  <meta name="description" content="Download the official XTARMAI WebView companion app. Manual download only. Choose Android (APK) or iPhone (iOS profile)." />
-
-  <!-- Safety for Google / avoid indexing the download landing page -->
-  <meta name="robots" content="noindex,nofollow" />
-
-  <!-- Basic CSP (good signal + reduces injection risk) -->
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests" />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index,follow" />
+  <title>XTARMAI - Official App Download</title>
+  <meta name="description" content="Official XTARMAI WebView companion apps for Android and iPhone. Manual download only. No automatic downloads or hidden redirects." />
   <style>
-    :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: #0b0f14;
-      color: #e9eef5;
-    }
-    .wrap {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .card {
-      background: #111827;
-      border: 1px solid #233044;
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
-    }
-    h1 { font-size: 22px; margin: 0 0 8px; }
-    p { margin: 8px 0; line-height: 1.5; color: #c9d4e5; }
-    .hint {
-      font-size: 13px;
-      color: #a7b7cf;
-      background: #0b1220;
-      border: 1px dashed #2a3a55;
-      padding: 10px;
-      border-radius: 12px;
-      margin-top: 12px;
-    }
-    .btns {
-      display: grid;
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 14px 14px;
-      border-radius: 14px;
-      border: 1px solid #2b3a52;
-      background: #0f172a;
-      color: #e9eef5;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-      user-select: none;
-    }
-    .btn.primary {
-      background: #1d4ed8;
-      border-color: #1d4ed8;
-    }
-    .btn.secondary {
-      background: #0b1220;
-    }
-    .row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-    .smalllink {
-      font-size: 13px;
-      color: #9bb0cd;
-      text-decoration: none;
-    }
-    .smalllink:hover { text-decoration: underline; }
-    .badge {
-      display: inline-block;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #0b1220;
-      border: 1px solid #2a3a55;
-      color: #a9bdd8;
-      margin-top: 10px;
-    }
-    footer { margin-top: 14px; font-size: 12px; color: #94a3b8; }
+    :root { --bg:#070b12; --card:#0b1424; --text:#eaf0ff; --muted:#b6c3e6; --line:rgba(255,255,255,.12); --btn:#1f5fff; --btn2:#0f1b33; }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+      radial-gradient(1200px 800px at 20% 10%, rgba(31,95,255,.25), transparent 60%),
+      radial-gradient(1000px 700px at 80% 30%, rgba(0,224,255,.12), transparent 55%),
+      var(--bg); color:var(--text); }
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{width:min(680px,100%);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line); border-radius:22px; padding:22px; box-shadow:0 20px 60px rgba(0,0,0,.45)}
+    h1{font-size:26px;margin:0 0 10px;letter-spacing:.2px}
+    p{margin:10px 0;line-height:1.5;color:var(--muted)}
+    .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);
+      background:rgba(0,0,0,.2); padding:8px 12px;border-radius:999px;color:var(--text); font-size:13px; margin:10px 0 14px}
+    .badge strong{font-weight:650}
+    .buttons{display:grid;gap:12px;margin-top:14px}
+    a.btn{display:flex;align-items:center;justify-content:center;text-decoration:none;
+      padding:16px 14px;border-radius:16px;border:1px solid var(--line); font-weight:700; letter-spacing:.2px}
+    a.primary{background:var(--btn); color:white}
+    a.secondary{background:rgba(15,27,51,.55); color:var(--text)}
+    a.btn:active{transform:translateY(1px)}
+    .small{font-size:13px;color:var(--muted);margin-top:14px}
+    .small a{color:#9fb6ff;text-decoration:none;border-bottom:1px dotted rgba(159,182,255,.6)}
+    .note{margin-top:14px;padding:14px;border:1px dashed rgba(255,255,255,.18);border-radius:16px;background:rgba(0,0,0,.18);color:var(--muted)}
+    .note strong{color:var(--text)}
+    .hide{display:none !important}
+    @media (max-width:420px){ h1{font-size:22px} a.btn{padding:15px 12px} .card{padding:18px} }
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <div class="card">
-      <h1>XTARMAI – Official App Download</h1>
+    <main class="card" role="main" aria-label="XTARMAI Official App Download">
+      <h1>XTARMAI - Official App Download</h1>
       <p>This page provides the official XTARMAI WebView companion apps.</p>
-      <p><b>Manual download only.</b> No automatic downloads, no hidden redirects.</p>
 
-      <div id="deviceBadge" class="badge">Detecting your device…</div>
+      <div class="badge" aria-label="Manual download notice">
+        <strong>Manual download only.</strong>
+        <span>No automatic downloads. No hidden redirects.</span>
+      </div>
 
-      <div class="btns">
-        <!-- Primary button: will be updated based on device -->
-        <a id="smartBtn" class="btn primary" href="#" rel="nofollow noopener">
-          Download (Recommended)
-        </a>
+      <p>
+        The XTARMAI app is a lightweight WebView wrapper that opens
+        <a href="https://xtarmai.com" rel="noopener noreferrer">https://xtarmai.com</a>
+        inside an app interface.
+      </p>
 
-        <!-- Always visible manual options (good for Google + transparency) -->
-        <a id="androidBtn" class="btn secondary" href="#" rel="nofollow noopener">
+      <div class="note" aria-label="Important information">
+        <strong>Important:</strong> Installation requires user confirmation on your device.
+        Nothing is installed automatically.
+      </div>
+
+      <section class="buttons" aria-label="Download buttons">
+        <a id="btn-android" class="btn primary" href="https://github.com/yazanlawaad3-stack/xtarmai-app/releases/download/v1.0.0/xtarmai.apk" rel="noopener noreferrer">
           Download for Android (APK)
         </a>
 
-        <a id="iosBtn" class="btn secondary" href="#" rel="nofollow noopener">
+        <a id="btn-ios" class="btn primary" href="https://github.com/yazanlawaad3-stack/xtarmai-app/releases/download/v1.0.0/install.mobileconfig" rel="noopener noreferrer">
           Download for iPhone (iOS Profile)
         </a>
+
+        <a id="btn-both" class="btn secondary hide" href="https://github.com/yazanlawaad3-stack/xtarmai-app/releases/tag/v1.0.0" rel="noopener noreferrer">
+          View all downloads
+        </a>
+      </section>
+
+      <div class="small">
+        Need a different version? <a href="https://github.com/yazanlawaad3-stack/xtarmai-app/releases" rel="noopener noreferrer">See all releases</a>
+        &nbsp;&bull;&nbsp; Back to <a href="https://xtarmai.com" rel="noopener noreferrer">xtarmai.com</a>
       </div>
 
-      <div class="hint">
-        <b>Security note:</b> The downloads are hosted on GitHub Releases. Installation requires user confirmation by the device OS.
-      </div>
+      <script>
+        (function () {
+          var ua = (navigator.userAgent || "").toLowerCase();
+          var isAndroid = ua.includes("android");
+          var isIOS = /iphone|ipad|ipod/.test(ua);
 
-      <div class="row">
-        <a id="releasePage" class="smalllink" href="#" rel="nofollow noopener">View latest release page</a>
-        <span class="smalllink">•</span>
-        <a class="smalllink" href="https://xtarmai.com" rel="noopener">Back to xtarmai.com</a>
-      </div>
+          var btnAndroid = document.getElementById("btn-android");
+          var btnIOS = document.getElementById("btn-ios");
+          var btnBoth = document.getElementById("btn-both");
 
-      <footer>
-        If you have issues, contact support: <span style="color:#cbd5e1;">support@xtarmai.com</span>
-      </footer>
-    </div>
+          // Show ONLY the relevant button when device is clearly detected.
+          if (isAndroid && !isIOS) {
+            btnIOS.classList.add("hide");
+          } else if (isIOS && !isAndroid) {
+            btnAndroid.classList.add("hide");
+          } else {
+            // Unknown/desktop -> show both + an extra link to view all.
+            btnBoth.classList.remove("hide");
+          }
+        })();
+      </script>
+    </main>
   </div>
-
-  <script>
-    // ✅ ضع روابط GitHub هنا (عدّل USERNAME/REPO إذا لزم)
-    const RELEASE_PAGE = "https://github.com/USERNAME/xtarmai-app/releases/latest";
-    const ANDROID_APK  = "https://github.com/USERNAME/xtarmai-app/releases/latest/download/xtarmai.apk";
-    const IOS_PROFILE  = "https://github.com/USERNAME/xtarmai-app/releases/latest/download/install.mobileconfig";
-
-    // bind links
-    document.getElementById("androidBtn").href = ANDROID_APK;
-    document.getElementById("iosBtn").href = IOS_PROFILE;
-    document.getElementById("releasePage").href = RELEASE_PAGE;
-
-    function detectOS() {
-      const ua = navigator.userAgent || navigator.vendor || window.opera;
-      const uaL = (ua || "").toLowerCase();
-
-      if (/android/i.test(ua)) return "android";
-      if (/iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "ios";
-      if (uaL.includes("windows")) return "windows";
-      if (uaL.includes("mac")) return "mac";
-      return "other";
-    }
-
-    const os = detectOS();
-    const badge = document.getElementById("deviceBadge");
-    const smartBtn = document.getElementById("smartBtn");
-
-    if (os === "android") {
-      badge.textContent = "Detected: Android device";
-      smartBtn.textContent = "Download for Android (APK)";
-      smartBtn.href = ANDROID_APK;
-    } else if (os === "ios") {
-      badge.textContent = "Detected: iPhone / iPad";
-      smartBtn.textContent = "Download for iPhone (iOS Profile)";
-      smartBtn.href = IOS_PROFILE;
-    } else {
-      badge.textContent = "Detected: Desktop / Other device";
-      smartBtn.textContent = "Open latest release page";
-      smartBtn.href = RELEASE_PAGE;
-    }
-
-    // ✅ أمان إضافي: لا تخلي الزر يشتغل إذا ما عنده رابط
-    smartBtn.addEventListener("click", (e) => {
-      if (!smartBtn.href || smartBtn.href === "#") e.preventDefault();
-    });
-  </script>
 </body>
 </html>
