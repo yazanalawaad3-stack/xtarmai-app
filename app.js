@@ -18,6 +18,8 @@
 
     balance: 0,
     realizedPnl: 0,
+    housePnl: 0,
+    houseBalance: 0,
     positions: [], // {id, side, amount, entryPrice, openedAt, mode, closeAt, scenarioPct, scenarioName}
     trades: [],    // {time, side, amount, scenarioName, pnl}
     pendingSide: null,
@@ -62,6 +64,8 @@
   function renderStats() {
     $("livePrice").textContent = fmt(state.price, 6);
     $("balance").textContent = fmt2(state.balance);
+    $("houseWallet").textContent = fmt2(state.houseBalance);
+    $("houseTotal").textContent = (state.housePnl >= 0 ? "+" : "") + fmt2(state.housePnl);
 
     const u = calcUnrealizedMarket();
     $("unrealized").textContent = (u >= 0 ? "+" : "") + fmt2(u);
@@ -138,6 +142,8 @@
     const v = parseFloat($("startBalance").value);
     state.balance = Number.isFinite(v) && v >= 0 ? v : 0;
     state.realizedPnl = 0;
+    state.housePnl = 0;
+    state.houseBalance = 0;
     state.positions = [];
     state.trades = [];
     renderAll();
@@ -234,18 +240,31 @@
 
     // Scenario PnL (NOT market)
     const fee = feeFor(p.amount);
-    const pnl = p.amount * (p.scenarioPct / 100) - fee;
+    const rawPnl = p.amount * (p.scenarioPct / 100) - fee;
 
-    // Release reserved amount + pnl to balance
-    state.balance += p.amount + pnl;
-    state.realizedPnl += pnl;
+    // Split rule: only positive scenario PnL is split 70/30 (House/Player).
+    // Losses are kept fully on the player side in this personal demo.
+    let playerPnl = rawPnl;
+    let houseCut = 0;
+    if (rawPnl > 0) {
+      playerPnl = rawPnl * 0.30;
+      houseCut = rawPnl - playerPnl; // 70%
+    }
+
+    // Release reserved amount + player's pnl back to player's balance
+    state.balance += p.amount + playerPnl;
+    state.realizedPnl += playerPnl;
+
+    // Track house cut separately
+    state.houseBalance += houseCut;
+    state.housePnl += houseCut;
 
     state.trades.push({
       time: nowTs(),
       side: p.side,
       amount: p.amount,
       scenarioName: p.scenarioName,
-      pnl: pnl,
+      pnl: playerPnl,
     });
 
     state.positions.splice(idx, 1);

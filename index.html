@@ -47,8 +47,7 @@
     <h1>Scenario Trading Demo (Personal)</h1>
     <div class="note warn">
       Personal demo for UI testing and fun. No real trading. No real funds. <br/>
-      Outcomes are <b>scenario-based</b> and <b>manually selected</b> before opening a position.
-      Live price is shown from Binance public stream (WebSocket) with REST fallback.
+      Outcomes are <b>scenario-based</b> and <b>manually selected</b> before opening a position. If a trade ends with positive scenario PnL, it is split <b>70% to House</b> and <b>30% to Player</b>. Live price is shown from Binance public stream (WebSocket) with REST fallback.
     </div>
 
     <div class="grid">
@@ -64,6 +63,7 @@
           </div>
         </div>
 
+        
         <div class="stat">
           <div>
             <div class="k">Live price</div>
@@ -75,7 +75,17 @@
           </div>
         </div>
 
-        <div class="row" style="margin-top:10px;">
+        <div class="stat" style="margin-top:8px;">
+          <div>
+            <div class="k">House wallet</div>
+            <div class="v" id="houseWallet">—</div>
+          </div>
+          <div>
+            <div class="k">House total</div>
+            <div class="v" id="houseTotal">—</div>
+          </div>
+        </div>
+<div class="row" style="margin-top:10px;">
           <div>
             <label>Trade amount (points)</label>
             <input id="tradeAmount" type="number" min="0.01" step="0.01" value="10" />
@@ -111,7 +121,7 @@
 
         <div class="footer muted">
           <div>Data: <span class="tag" id="feedStatus">connecting...</span></div>
-          <div>Scenario: <span class="tag" id="scenarioHint">ask on open</span></div>
+          <div>Split: <span class="tag">House 70% / Player 30% (wins)</span></div>
         </div>
       </div>
 
