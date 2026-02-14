@@ -1,390 +1,216 @@
-/* Scenario Trading Demo (Personal)
-   - Live price display via Binance WebSocket (public) + REST fallback
-   - Trading modes: Timed (auto close) / Open (manual close)
-   - Outcomes are scenario-based and manually selected before opening.
-   - PnL uses selected scenario percent, not market movement.
+/* Demo Trading Simulator - local only
+   No real trading, no accounts, no database.
+   Data is stored in localStorage.
 */
-
-(function () {
+(() => {
   "use strict";
 
-  const $ = (id) => document.getElementById(id);
+  const STORAGE_KEY = "demo_trading_state_v1";
 
-  const state = {
-    price: NaN,
-    lastPriceAt: 0,
-    ws: null,
-    wsConnected: false,
-
-    balance: 0,
-    realizedPnl: 0,
-    housePnl: 0,
-    houseBalance: 0,
-    positions: [], // {id, side, amount, entryPrice, openedAt, mode, closeAt, scenarioPct, scenarioName}
-    trades: [],    // {time, side, amount, scenarioName, pnl}
-    pendingSide: null,
+  const DEFAULT_STATE = {
+    balance: 1000,
+    pool: 0,
+    step: 0, // 0->L, 1->L, 2->W, repeat
+    history: [],
+    lastPrice: null,
+    lastPriceUpdatedAt: null
   };
 
-  function nowTs() { return Date.now(); }
-  function fmt(n, d = 6) { return Number.isFinite(n) ? n.toFixed(d) : "—"; }
-  function fmt2(n) { return Number.isFinite(n) ? n.toFixed(2) : "—"; }
-  function uid() { return Math.random().toString(16).slice(2) + "-" + nowTs().toString(16); }
+  const OUTCOMES = ["LOSS", "LOSS", "WIN"];
 
-  function normalizeSymbol(sym) {
-    return String(sym || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-  }
+  const el = (id) => document.getElementById(id);
 
-  function setFeedStatus(text) { $("feedStatus").textContent = text; }
+  const fmt = (n) => {
+    const x = Number(n);
+    if (!Number.isFinite(x)) return "0";
+    return x.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  };
 
-  function getFeePct() {
-    const v = parseFloat($("feePct").value);
-    return Number.isFinite(v) && v >= 0 ? v : 0;
-  }
+  const nowStr = () => new Date().toLocaleString();
 
-  function feeFor(amount) {
-    const pct = getFeePct() / 100;
-    return amount * pct;
-  }
-
-  // Market-only unrealized display (optional)
-  function marketPnl(side, amount, entry, exit) {
-    if (exit <= 0 || entry <= 0) return 0;
-    if (side === "LONG") return amount * (exit / entry - 1);
-    return amount * (entry / exit - 1);
-  }
-
-  function calcUnrealizedMarket() {
-    let total = 0;
-    for (const p of state.positions) {
-      total += marketPnl(p.side, p.amount, p.entryPrice, state.price);
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return structuredClone(DEFAULT_STATE);
+      const parsed = JSON.parse(raw);
+      return {
+        ...structuredClone(DEFAULT_STATE),
+        ...parsed,
+        history: Array.isArray(parsed.history) ? parsed.history : []
+      };
+    } catch {
+      return structuredClone(DEFAULT_STATE);
     }
-    return total;
   }
 
-  function renderStats() {
-    $("livePrice").textContent = fmt(state.price, 6);
-    $("balance").textContent = fmt2(state.balance);
-    $("houseWallet").textContent = fmt2(state.houseBalance);
-    $("houseTotal").textContent = (state.housePnl >= 0 ? "+" : "") + fmt2(state.housePnl);
-
-    const u = calcUnrealizedMarket();
-    $("unrealized").textContent = (u >= 0 ? "+" : "") + fmt2(u);
-    $("unrealized").className = "v " + (u >= 0 ? "ok" : "bad");
-
-    $("realized").textContent = (state.realizedPnl >= 0 ? "+" : "") + fmt2(state.realizedPnl);
-    $("realized").className = "v " + (state.realizedPnl >= 0 ? "ok" : "bad");
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function renderPositions() {
-    const body = $("positionsBody");
+  function nextOutcome(state) {
+    return OUTCOMES[state.step % OUTCOMES.length];
+  }
+
+  function render(state) {
+    el("balance").textContent = fmt(state.balance);
+    el("pool").textContent = fmt(state.pool);
+    el("nextOutcome").textContent = nextOutcome(state);
+
+    if (state.lastPrice != null) {
+      el("price").textContent = fmt(state.lastPrice);
+      el("updated").textContent = state.lastPriceUpdatedAt || "—";
+    }
+
+    const body = el("historyBody");
     body.innerHTML = "";
-    if (state.positions.length === 0) {
+    if (!state.history.length) {
       const tr = document.createElement("tr");
-      tr.innerHTML = '<td colspan="5" class="muted">No open positions</td>';
+      const td = document.createElement("td");
+      td.colSpan = 8;
+      td.className = "muted";
+      td.textContent = "No trades yet.";
+      tr.appendChild(td);
       body.appendChild(tr);
       return;
     }
 
-    for (const p of state.positions) {
+    state.history.slice().reverse().forEach((h, idx) => {
       const tr = document.createElement("tr");
-      const pill = '<span class="pill">' + (p.side === "LONG" ? "LONG" : "SHORT") + "</span>";
-      const modeTxt = p.mode === "timed" ? "timed" : "open";
-
-      const btn = document.createElement("button");
-      btn.textContent = "Close";
-      btn.style.padding = "6px 10px";
-      btn.addEventListener("click", () => closePosition(p.id));
-
-      tr.innerHTML = `
-        <td>${pill} <span class="muted">(${modeTxt})</span></td>
-        <td class="right">${fmt2(p.amount)}</td>
-        <td class="right">${fmt(p.entryPrice, 6)}</td>
-        <td class="right"><span class="tag">${p.scenarioName}</span></td>
-        <td class="right"></td>
-      `;
-      tr.children[4].appendChild(btn);
+      const cells = [
+        String(state.history.length - idx),
+        h.time,
+        fmt(h.stake),
+        h.outcome,
+        fmt(h.poolDelta),
+        fmt(h.payout),
+        fmt(h.fee),
+        fmt(h.balanceAfter)
+      ];
+      for (const c of cells) {
+        const td = document.createElement("td");
+        td.textContent = c;
+        tr.appendChild(td);
+      }
       body.appendChild(tr);
-    }
+    });
   }
 
-  function renderTrades() {
-    const body = $("tradesBody");
-    body.innerHTML = "";
-    if (state.trades.length === 0) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = '<td colspan="5" class="muted">No trades yet</td>';
-      body.appendChild(tr);
-      return;
-    }
-
-    const recent = state.trades.slice(-14).reverse();
-    for (const t of recent) {
-      const tr = document.createElement("tr");
-      const pnlText = (t.pnl >= 0 ? "+" : "") + fmt2(t.pnl);
-      tr.innerHTML = `
-        <td class="muted">${new Date(t.time).toLocaleTimeString()}</td>
-        <td>${t.side}</td>
-        <td class="right">${fmt2(t.amount)}</td>
-        <td class="right"><span class="tag">${t.scenarioName}</span></td>
-        <td class="right ${t.pnl >= 0 ? "ok" : "bad"}">${pnlText}</td>
-      `;
-      body.appendChild(tr);
-    }
+  function clampAmount(v) {
+    const n = Math.floor(Number(v));
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(0, n);
   }
 
-  function renderAll() {
-    renderStats();
-    renderPositions();
-    renderTrades();
-  }
+  function placeTrade(state, stake) {
+    const outcome = nextOutcome(state);
 
-  function initBalance() {
-    const v = parseFloat($("startBalance").value);
-    state.balance = Number.isFinite(v) && v >= 0 ? v : 0;
-    state.realizedPnl = 0;
-    state.housePnl = 0;
-    state.houseBalance = 0;
-    state.positions = [];
-    state.trades = [];
-    renderAll();
-  }
+    if (stake <= 0) return { ok: false, message: "Stake must be greater than 0." };
+    if (stake > state.balance) return { ok: false, message: "Insufficient demo balance." };
 
-  // -------- Scenario Modal --------
-  function openScenarioModal(side) {
-    state.pendingSide = side;
-    $("scenarioModal").style.display = "flex";
-    $("scenarioHint").textContent = "selecting...";
-  }
+    let poolDelta = 0;
+    let payout = 0;
+    let fee = 0;
 
-  function closeScenarioModal() {
-    state.pendingSide = null;
-    $("scenarioModal").style.display = "none";
-    $("scenarioHint").textContent = "ask on open";
-  }
-
-  function scenarioFromUI(amount) {
-    const sel = $("scenarioSelect").value;
-
-    let pct = 0;
-    let name = sel;
-
-    if (sel === "LOSS_FULL") { pct = -100; name = "LOSS -100%"; }
-    else if (sel === "WIN_10") { pct = 10; name = "WIN +10%"; }
-    else if (sel === "WIN_30") { pct = 30; name = "WIN +30%"; }
-    else if (sel === "WIN_50") { pct = 50; name = "WIN +50%"; }
-    else if (sel === "CUSTOM") {
-      const v = parseFloat($("customPct").value);
-      pct = Number.isFinite(v) ? v : 0;
-      // Clamp to keep the demo reasonable
-      pct = Math.max(-100, Math.min(300, pct));
-      name = "CUSTOM " + pct.toFixed(2) + "%";
+    if (outcome === "LOSS") {
+      const toPool = stake * 0.70;
+      fee = stake * 0.30;
+      poolDelta = toPool;
+      state.pool += toPool;
+      state.balance -= stake;
     } else {
-      pct = 0;
-      name = "FLAT 0%";
+      payout = state.pool * 0.30;
+      state.balance += payout;
+      poolDelta = -state.pool;
+      state.pool = 0;
     }
 
-    // PnL uses scenario percent on amount
-    const fee = feeFor(amount);
-    const pnl = amount * (pct / 100) - fee;
+    state.step = (state.step + 1) % OUTCOMES.length;
 
-    return { pct, name, pnl };
-  }
-
-  // -------- Trading Logic --------
-  function openPositionWithScenario(side) {
-    if (!Number.isFinite(state.price)) {
-      alert("Price not ready yet.");
-      return;
-    }
-
-    const amount = parseFloat($("tradeAmount").value);
-    if (!Number.isFinite(amount) || amount <= 0) {
-      alert("Invalid trade amount.");
-      return;
-    }
-    if (amount > state.balance) {
-      alert("Not enough balance.");
-      return;
-    }
-
-    const mode = $("mode").value;
-    const durationSec = parseInt($("duration").value, 10);
-
-    const sc = scenarioFromUI(amount);
-
-    // Reserve amount from balance
-    state.balance -= amount;
-
-    const pos = {
-      id: uid(),
-      side: side,
-      amount: amount,
-      entryPrice: state.price,
-      openedAt: nowTs(),
-      mode: mode,
-      closeAt: mode === "timed" ? nowTs() + (Number.isFinite(durationSec) ? durationSec * 1000 : 60000) : null,
-      scenarioPct: sc.pct,
-      scenarioName: sc.name,
+    const entry = {
+      time: nowStr(),
+      stake,
+      outcome,
+      poolDelta,
+      payout,
+      fee,
+      balanceAfter: state.balance
     };
 
-    state.positions.push(pos);
-    $("scenarioHint").textContent = sc.name;
-    renderAll();
+    state.history.push(entry);
+    if (state.history.length > 200) state.history.shift();
+
+    return { ok: true };
   }
 
-  function closePosition(id) {
-    const idx = state.positions.findIndex(p => p.id === id);
-    if (idx === -1) return;
+  async function fetchBinancePrice(symbol = "BTCUSDT") {
+    const url = "https://api.binance.com/api/v3/ticker/price?symbol=" + encodeURIComponent(symbol);
+    const res = await fetch(url, { method: "GET" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    const price = Number(data.price);
+    if (!Number.isFinite(price)) throw new Error("Invalid price");
+    return price;
+  }
 
-    const p = state.positions[idx];
+  function toast(message) {
+    const n = document.createElement("div");
+    n.textContent = message;
+    n.style.position = "fixed";
+    n.style.left = "50%";
+    n.style.bottom = "18px";
+    n.style.transform = "translateX(-50%)";
+    n.style.padding = "10px 12px";
+    n.style.borderRadius = "10px";
+    n.style.border = "1px solid rgba(255,255,255,.18)";
+    n.style.background = "rgba(15,22,32,.95)";
+    n.style.color = "white";
+    n.style.zIndex = "9999";
+    n.style.maxWidth = "92vw";
+    n.style.boxShadow = "0 12px 30px rgba(0,0,0,.25)";
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 2600);
+  }
 
-    // Scenario PnL (NOT market)
-    const fee = feeFor(p.amount);
-    const rawPnl = p.amount * (p.scenarioPct / 100) - fee;
+  function init() {
+    let state = loadState();
+    render(state);
 
-    // Split rule: only positive scenario PnL is split 70/30 (House/Player).
-    // Losses are kept fully on the player side in this personal demo.
-    let playerPnl = rawPnl;
-    let houseCut = 0;
-    if (rawPnl > 0) {
-      playerPnl = rawPnl * 0.30;
-      houseCut = rawPnl - playerPnl; // 70%
-    }
-
-    // Release reserved amount + player's pnl back to player's balance
-    state.balance += p.amount + playerPnl;
-    state.realizedPnl += playerPnl;
-
-    // Track house cut separately
-    state.houseBalance += houseCut;
-    state.housePnl += houseCut;
-
-    state.trades.push({
-      time: nowTs(),
-      side: p.side,
-      amount: p.amount,
-      scenarioName: p.scenarioName,
-      pnl: playerPnl,
+    el("tradeForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const stake = clampAmount(el("amount").value);
+      const r = placeTrade(state, stake);
+      if (!r.ok) {
+        toast(r.message);
+        return;
+      }
+      saveState(state);
+      render(state);
     });
 
-    state.positions.splice(idx, 1);
-    renderAll();
-  }
+    el("resetDemo").addEventListener("click", () => {
+      state = structuredClone(DEFAULT_STATE);
+      saveState(state);
+      render(state);
+      toast("Demo reset.");
+    });
 
-  function autoCloseTimedPositions() {
-    const t = nowTs();
-    const ids = state.positions
-      .filter(p => p.mode === "timed" && p.closeAt != null && t >= p.closeAt)
-      .map(p => p.id);
-
-    for (const id of ids) closePosition(id);
-  }
-
-  // -------- Live Price Feed --------
-  async function fetchRestPrice(symbol) {
-    try {
-      const url = "https://api.binance.com/api/v3/ticker/price?symbol=" + encodeURIComponent(symbol);
-      const res = await fetch(url, { method: "GET" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
-      const p = parseFloat(data.price);
-      if (Number.isFinite(p) && p > 0) {
-        state.price = p;
-        state.lastPriceAt = nowTs();
-        setFeedStatus("REST");
-      }
-    } catch (_) {}
-  }
-
-  function closeWs() {
-    if (state.ws) {
-      try { state.ws.close(); } catch (_) {}
-      state.ws = null;
-      state.wsConnected = false;
-    }
-  }
-
-  function connectWs(symbol) {
-    closeWs();
-    const stream = symbol.toLowerCase() + "@trade";
-    const url = "wss://stream.binance.com:9443/ws/" + stream;
-
-    setFeedStatus("connecting...");
-    const ws = new WebSocket(url);
-    state.ws = ws;
-
-    ws.onopen = () => { state.wsConnected = true; setFeedStatus("WS"); };
-    ws.onmessage = (ev) => {
+    const refresh = async () => {
       try {
-        const msg = JSON.parse(ev.data);
-        const p = parseFloat(msg.p);
-        if (Number.isFinite(p) && p > 0) {
-          state.price = p;
-          state.lastPriceAt = nowTs();
-        }
-      } catch (_) {}
+        const price = await fetchBinancePrice("BTCUSDT");
+        state.lastPrice = price;
+        state.lastPriceUpdatedAt = nowStr();
+        saveState(state);
+        render(state);
+      } catch {
+        toast("Price fetch failed. Simulator still works.");
+      }
     };
-    ws.onclose = () => { state.wsConnected = false; setFeedStatus("disconnected"); };
-    ws.onerror = () => { state.wsConnected = false; setFeedStatus("error"); };
+
+    el("refreshPrice").addEventListener("click", refresh);
+
+    // Auto refresh once on load (non-blocking).
+    refresh();
   }
 
-  function restartFeed() {
-    const symbol = normalizeSymbol($("symbol").value);
-    if (!symbol) return;
-    fetchRestPrice(symbol);
-    connectWs(symbol);
-  }
-
-  async function healthCheck() {
-    const symbol = normalizeSymbol($("symbol").value);
-    if (!symbol) return;
-
-    const age = nowTs() - state.lastPriceAt;
-    if (!Number.isFinite(state.price) || age > 9000) {
-      await fetchRestPrice(symbol);
-    }
-    if (!state.wsConnected) {
-      connectWs(symbol);
-    }
-  }
-
-  // -------- Events --------
-  $("buyBtn").addEventListener("click", () => openScenarioModal("LONG"));
-  $("sellBtn").addEventListener("click", () => openScenarioModal("SHORT"));
-
-  $("cancelScenarioBtn").addEventListener("click", () => closeScenarioModal());
-  $("confirmScenarioBtn").addEventListener("click", () => {
-    if (!state.pendingSide) return closeScenarioModal();
-    const side = state.pendingSide;
-    closeScenarioModal();
-    openPositionWithScenario(side);
-  });
-
-  $("scenarioModal").addEventListener("click", (e) => {
-    if (e.target && e.target.id === "scenarioModal") closeScenarioModal();
-  });
-
-  $("startBalance").addEventListener("change", initBalance);
-
-  $("mode").addEventListener("change", () => {
-    const isTimed = $("mode").value === "timed";
-    $("duration").disabled = !isTimed;
-  });
-
-  let symTimer = null;
-  $("symbol").addEventListener("input", () => {
-    clearTimeout(symTimer);
-    symTimer = setTimeout(() => restartFeed(), 500);
-  });
-
-  // -------- Main Loop --------
-  function loop() {
-    autoCloseTimedPositions();
-    renderAll();
-  }
-
-  initBalance();
-  restartFeed();
-  setInterval(loop, 250);
-  setInterval(healthCheck, 3000);
+  document.addEventListener("DOMContentLoaded", init);
 })();

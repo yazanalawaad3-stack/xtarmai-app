@@ -3,217 +3,114 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Scenario Trading Demo (Personal)</title>
-  <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; padding: 16px; background: #0b1020; color: #e8eefc; }
-    .wrap { max-width: 1050px; margin: 0 auto; }
-    h1 { margin: 0 0 6px; font-size: 20px; }
-    .note { font-size: 13px; opacity: 0.92; line-height: 1.4; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
-    .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; padding: 12px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    label { font-size: 12px; opacity: 0.95; display: block; margin-bottom: 6px; }
-    input, select, button { width: 100%; box-sizing: border-box; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.22); color: #e8eefc; }
-    button { cursor: pointer; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.10); font-weight: 700; }
-    button:hover { background: rgba(255,255,255,0.14); }
-    .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .stat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .stat .k { font-size: 12px; opacity: 0.85; }
-    .stat .v { font-size: 16px; font-weight: 800; margin-top: 2px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th, td { text-align: left; font-size: 12px; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.10); }
-    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); font-size: 11px; }
-    .right { text-align: right; }
-    .muted { opacity: 0.82; }
-    .ok { color: #7CFFB2; }
-    .bad { color: #FF7C7C; }
-    .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14); }
-    .footer { margin-top: 10px; font-size: 12px; opacity: 0.85; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-
-    /* Modal */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display:none; align-items:center; justify-content:center; padding: 16px; z-index: 50; }
-    .modal { width: min(520px, 100%); background: #111a33; border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 14px; }
-    .modal h2 { margin: 0 0 6px; font-size: 16px; }
-    .modal p { margin: 0 0 10px; font-size: 13px; opacity: 0.9; line-height: 1.35; }
-    .modal .actions { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top: 10px; }
-    .modal .actions button { padding: 10px; }
-    .warn { border-left: 3px solid rgba(255,180,80,0.9); padding-left: 10px; }
-    @media (max-width: 900px){ .grid { grid-template-columns: 1fr; } }
-  </style>
+  <title>Demo Trading Simulator (USDT BEP-20) - Local Only</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1>Scenario Trading Demo (Personal)</h1>
-    <div class="note warn">
-      Personal demo for UI testing and fun. No real trading. No real funds. <br/>
-      Outcomes are <b>scenario-based</b> and <b>manually selected</b> before opening a position. If a trade ends with positive scenario PnL, it is split <b>70% to House</b> and <b>30% to Player</b>. Live price is shown from Binance public stream (WebSocket) with REST fallback.
-    </div>
+  <header class="wrap">
+    <h1>Demo Trading Simulator</h1>
+    <p class="sub">
+      Educational / entertainment only. Local-only demo points. No real money. No accounts. No database.
+    </p>
+  </header>
 
-    <div class="grid">
-      <div class="card">
-        <div class="row">
-          <div>
-            <label>Starting balance (points)</label>
-            <input id="startBalance" type="number" min="0" step="0.01" value="100" />
-          </div>
-          <div>
-            <label>Symbol (Binance)</label>
-            <input id="symbol" type="text" value="BTCUSDT" />
-          </div>
-        </div>
-
-        
-        <div class="stat">
-          <div>
-            <div class="k">Live price</div>
-            <div class="v" id="livePrice">—</div>
-          </div>
-          <div>
-            <div class="k">Balance</div>
-            <div class="v" id="balance">—</div>
-          </div>
-        </div>
-
-        <div class="stat" style="margin-top:8px;">
-          <div>
-            <div class="k">House wallet</div>
-            <div class="v" id="houseWallet">—</div>
-          </div>
-          <div>
-            <div class="k">House total</div>
-            <div class="v" id="houseTotal">—</div>
-          </div>
-        </div>
-<div class="row" style="margin-top:10px;">
-          <div>
-            <label>Trade amount (points)</label>
-            <input id="tradeAmount" type="number" min="0.01" step="0.01" value="10" />
-          </div>
-          <div>
-            <label>Mode</label>
-            <select id="mode">
-              <option value="timed">Timed (auto close)</option>
-              <option value="open">Open (manual close)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px;">
-          <div>
-            <label>Timed duration</label>
-            <select id="duration">
-              <option value="60">1 minute</option>
-              <option value="120">2 minutes</option>
-              <option value="300">5 minutes</option>
-            </select>
-          </div>
-          <div>
-            <label>Fee (round trip %)</label>
-            <input id="feePct" type="number" min="0" step="0.01" value="0.20" />
-          </div>
-        </div>
-
-        <div class="btns">
-          <button id="buyBtn">Buy (Long)</button>
-          <button id="sellBtn">Sell (Short)</button>
-        </div>
-
-        <div class="footer muted">
-          <div>Data: <span class="tag" id="feedStatus">connecting...</span></div>
-          <div>Split: <span class="tag">House 70% / Player 30% (wins)</span></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row">
-          <div>
-            <div class="k">Unrealized PnL (market)</div>
-            <div class="v" id="unrealized">—</div>
-          </div>
-          <div>
-            <div class="k">Realized PnL (scenario)</div>
-            <div class="v" id="realized">—</div>
-          </div>
-        </div>
-
-        <div style="margin-top:10px;">
-          <div class="k">Open positions</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Side</th>
-                <th class="right">Amount</th>
-                <th class="right">Entry</th>
-                <th class="right">Scenario</th>
-                <th class="right">Action</th>
-              </tr>
-            </thead>
-            <tbody id="positionsBody">
-              <tr><td colspan="5" class="muted">No open positions</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div style="margin-top:10px;">
-          <div class="k">Recent trades</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Side</th>
-                <th class="right">Amount</th>
-                <th class="right">Scenario</th>
-                <th class="right">PnL</th>
-              </tr>
-            </thead>
-            <tbody id="tradesBody">
-              <tr><td colspan="5" class="muted">No trades yet</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scenario Modal -->
-  <div class="modal-backdrop" id="scenarioModal">
-    <div class="modal">
-      <h2>Select outcome scenario</h2>
-      <p>
-        This demo does <b>not</b> use market logic to decide outcomes.
-        You manually choose the scenario <b>before</b> opening a position.
-      </p>
-
+  <main class="wrap grid">
+    <section class="card">
+      <h2>Live Reference Price (Binance)</h2>
       <div class="row">
-        <div>
-          <label>Scenario</label>
-          <select id="scenarioSelect">
-            <option value="LOSS_FULL">Loss (100% of trade amount)</option>
-            <option value="WIN_10">Win (+10% of trade amount)</option>
-            <option value="WIN_30" selected>Win (+30% of trade amount)</option>
-            <option value="WIN_50">Win (+50% of trade amount)</option>
-            <option value="CUSTOM">Custom %</option>
-          </select>
-        </div>
-        <div>
-          <label>Custom % (only if Custom)</label>
-          <input id="customPct" type="number" min="-100" max="300" step="0.01" value="30" />
-        </div>
+        <div class="k">Symbol</div>
+        <div class="v" id="symbol">BTCUSDT</div>
       </div>
-
+      <div class="row">
+        <div class="k">Last Price</div>
+        <div class="v mono" id="price">—</div>
+      </div>
+      <div class="row">
+        <div class="k">Updated</div>
+        <div class="v mono" id="updated">—</div>
+      </div>
+      <p class="hint">
+        Price is fetched from Binance public endpoint (no API key). If blocked, the simulator still works.
+      </p>
       <div class="actions">
-        <button id="cancelScenarioBtn">Cancel</button>
-        <button id="confirmScenarioBtn">Confirm & Open</button>
+        <button id="refreshPrice" type="button">Refresh price</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Demo Wallet</h2>
+      <div class="row">
+        <div class="k">Demo Balance</div>
+        <div class="v mono" id="balance">—</div>
+      </div>
+      <div class="row">
+        <div class="k">Pool</div>
+        <div class="v mono" id="pool">—</div>
+      </div>
+      <div class="row">
+        <div class="k">Next Outcome</div>
+        <div class="v" id="nextOutcome">—</div>
       </div>
 
-      <div class="note" style="margin-top:10px;">
-        PnL is computed from <b>trade amount</b>:<br/>
-        pnl = tradeAmount * (percent / 100) - fee(tradeAmount)
-      </div>
-    </div>
-  </div>
+      <hr class="sep" />
 
-  <script src="./app.js"></script>
+      <h3>Place a Demo Trade</h3>
+      <form id="tradeForm" autocomplete="off">
+        <label class="lbl" for="amount">Stake (demo points)</label>
+        <input id="amount" name="amount" type="number" min="1" step="1" value="100" required />
+        <div class="small">
+          Loss adds 70% of stake into the pool and burns 30% as fee. Win pays 30% of the pool, then resets the pool.
+        </div>
+
+        <div class="actions">
+          <button id="placeTrade" type="submit">Place trade</button>
+          <button id="resetDemo" type="button" class="secondary">Reset demo</button>
+        </div>
+      </form>
+
+      <details class="rules">
+        <summary>Rules (click)</summary>
+        <ul>
+          <li>Local-only simulation using demo points.</li>
+          <li>Fixed sequence: Loss, Loss, Win (repeat).</li>
+          <li>On loss: balance decreases by stake; pool increases by 70% of stake; fee is 30% of stake.</li>
+          <li>On win: payout = 30% of current pool; balance increases by payout; pool resets to 0.</li>
+          <li>All data stored in your browser (localStorage). No server calls except price fetch.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="card span">
+      <h2>History</h2>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Time</th>
+              <th>Stake</th>
+              <th>Outcome</th>
+              <th>Pool Δ</th>
+              <th>Payout</th>
+              <th>Fee</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="8" class="muted">No trades yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <div class="pill">Local demo</div>
+    <div class="pill">Sequence: L, L, W</div>
+    <div class="pill">Loss: 70% pool / 30% fee</div>
+    <div class="pill">Win: 30% pool payout</div>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
