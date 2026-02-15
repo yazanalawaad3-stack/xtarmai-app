@@ -2,19 +2,14 @@
   "use strict";
 
   const STORAGE_KEY = "demo_trading_pro_v7";
-  let SYMBOL = "BTCUSDT";
+  const SYMBOL = "BTCUSDT";
 
   const TF_MAP = {
     "1m": "1m",
-    "3m": "3m",
     "5m": "5m",
     "15m": "15m",
-    "30m": "30m",
     "1h": "1h",
-    "2h": "2h",
     "4h": "4h",
-    "6h": "6h",
-    "12h": "12h",
     "1d": "1d"
   };
 
@@ -336,27 +331,6 @@
       xs.push(xCenter);
     }
 
-    // symbol apply
-    const symInput = document.getElementById("symInput");
-    const symApplyBtn = document.getElementById("symApplyBtn");
-    if (symInput) symInput.value = SYMBOL;
-    function applySymbol() {
-      if (!symInput) return;
-      const v = String(symInput.value || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-      if (!v) return;
-      SYMBOL = v;
-      // reset view when switching symbol
-      state.tf = state.tf || "1m";
-      state.chart.offset = 0;
-      state.markers = [];
-      saveState(state);
-      renderUI(state);
-      refreshMarket(state);
-      toast("Symbol set to " + SYMBOL);
-    }
-    if (symApplyBtn) symApplyBtn.addEventListener("click", (e) => { e.preventDefault(); applySymbol(); });
-    if (symInput) symInput.addEventListener("keydown", (e) => { if (e.key === "Enter") applySymbol(); });
-
     // indicators
     const sma20 = state.chart.sma20 ? sma(closes, 20) : null;
     const sma50 = state.chart.sma50 ? sma(closes, 50) : null;
@@ -443,11 +417,10 @@
     el("sma50").checked = !!state.chart.sma50;
     el("ema20").checked = !!state.chart.ema20;
 
-    // timeframe active is handled by tfSelect
-    const tfSelect = document.getElementById("tfSelect");
-    if (tfSelect) tfSelect.value = state.tf;
-    const tfBtn = document.getElementById("tfBtn");
-    if (tfBtn) tfBtn.textContent = state.tf;
+    // timeframe active
+    document.querySelectorAll(".tbtn[data-tf]").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-tf") === state.tf);
+    });
 
     // history
     const tbody = el("histBody");
@@ -769,7 +742,6 @@
     if (!inner) return;
     inner.classList.toggle("fullscreen", on);
     document.body.classList.toggle("fsLock", on);
-    document.body.classList.toggle("fsMode", on);
     resizeCanvas();
   }
 
@@ -789,43 +761,10 @@
   }
 
   function bindControls(state) {
-    // timeframe dropdown
-    const tfBtn = document.getElementById("tfBtn");
-    const tfMenu = document.getElementById("tfMenu");
-    const tfSelect = document.getElementById("tfSelect");
-
-    function closeTfMenu() { tfMenu.classList.add("hidden"); }
-    function toggleTfMenu() { tfMenu.classList.toggle("hidden"); }
-
-    tfBtn.addEventListener("click", (e) => { e.stopPropagation(); toggleTfMenu(); });
-    document.addEventListener("click", () => closeTfMenu());
-
-    tfSelect.value = state.tf;
-    tfSelect.addEventListener("change", () => {
-      setTimeframe(state, tfSelect.value);
-      closeTfMenu();
+    // timeframes
+    document.querySelectorAll(".tbtn[data-tf]").forEach((b) => {
+      b.addEventListener("click", () => setTimeframe(state, b.getAttribute("data-tf")));
     });
-
-    // symbol apply
-    const symInput = document.getElementById("symInput");
-    const symApplyBtn = document.getElementById("symApplyBtn");
-    if (symInput) symInput.value = SYMBOL;
-    function applySymbol() {
-      if (!symInput) return;
-      const v = String(symInput.value || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-      if (!v) return;
-      SYMBOL = v;
-      // reset view when switching symbol
-      state.tf = state.tf || "1m";
-      state.chart.offset = 0;
-      state.markers = [];
-      saveState(state);
-      renderUI(state);
-      refreshMarket(state);
-      toast("Symbol set to " + SYMBOL);
-    }
-    if (symApplyBtn) symApplyBtn.addEventListener("click", (e) => { e.preventDefault(); applySymbol(); });
-    if (symInput) symInput.addEventListener("keydown", (e) => { if (e.key === "Enter") applySymbol(); });
 
     // indicators
     el("sma20").addEventListener("change", () => { state.chart.sma20 = el("sma20").checked; saveState(state); drawChart(state); });
