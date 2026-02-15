@@ -137,3 +137,48 @@ th{color:var(--muted);font-weight:900;background:rgba(255,255,255,.03);position:
   .layout{grid-template-columns:1fr}
   table{min-width:720px}
 }
+
+
+/* Internal canvas chart */
+.chartInner{
+  position:relative;
+  width:100%;
+  height:100%;
+  min-height:520px;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.18);
+}
+#chartCanvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+.chartOverlay{
+  position:absolute;
+  left:10px;
+  top:10px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  pointer-events:none;
+}
+.ovItem{
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(15,22,32,.78);
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* Make chart + panels friendly on mobile */
+@media (max-width: 700px){
+  .chartCard{min-height:480px}
+  .chartInner{min-height:360px}
+  .stats{grid-template-columns:1fr}
+  .actions{grid-template-columns:1fr}
+  .posGrid{grid-template-columns:1fr}
+  table{min-width:680px}
+}
