@@ -182,3 +182,77 @@ th{color:var(--muted);font-weight:900;background:rgba(255,255,255,.03);position:
   .posGrid{grid-template-columns:1fr}
   table{min-width:680px}
 }
+
+
+/* Chart toolbar */
+.chartToolbar{
+  position:absolute;
+  left:10px;
+  right:10px;
+  top:10px;
+  display:flex;
+  gap:10px;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  z-index:5;
+}
+.tfGroup,.toolGroup{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.tbtn{
+  padding:7px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(15,22,32,.72);
+  color:rgba(231,238,247,.92);
+  cursor:pointer;
+  font-weight:800;
+  font-size:12px;
+}
+.tbtn:hover{border-color:rgba(255,255,255,.28);background:rgba(15,22,32,.82)}
+.tbtn.active{border-color:rgba(75,211,255,.7);box-shadow:0 0 0 3px rgba(75,211,255,.16)}
+.tbtn.ghost{color:var(--muted);font-weight:700}
+.chk{
+  display:flex;gap:6px;align-items:center;
+  padding:6px 10px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(15,22,32,.62);
+  color:var(--muted);
+  font-size:12px;
+}
+.chk input{width:14px;height:14px}
+
+/* Fullscreen chart */
+.chartInner.fullscreen{
+  position:fixed;
+  left:0; top:0;
+  width:100vw;
+  height:100vh;
+  min-height:100vh;
+  z-index:9998;
+  border-radius:0;
+}
+body.fsLock{
+  overflow:hidden;
+}
+.tradeBar{
+  position:absolute;
+  left:50%;
+  bottom:12px;
+  transform:translateX(-50%);
+  display:none;
+  gap:10px;
+  z-index:6;
+}
+.chartInner.fullscreen .tradeBar{display:flex}
+.chartInner.fullscreen .chartOverlay{top:58px} /* push overlay down under toolbar */
+
+@media (max-width: 700px){
+  .chartToolbar{left:8px;right:8px}
+  .tbtn{padding:8px 10px;font-size:12px}
+  .tradeBar{bottom:10px}
+}
