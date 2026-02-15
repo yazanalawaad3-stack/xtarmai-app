@@ -1,121 +1,43 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demo Trading Simulator - Local Only</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <title>USDT Demo Trading - Candles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
-  <header class="wrap">
-    <h1>Demo Trading Simulator</h1>
-    <p class="sub">
-      Educational / entertainment only. Local-only demo points. No real money. No accounts. No database.
-    </p>
-  </header>
 
-  <main class="wrap grid">
-    <section class="card">
-      <h2>Live Reference Price (Binance)</h2>
-      <div class="row">
-        <div class="k">Symbol</div>
-        <div class="v" id="symbol">BTCUSDT</div>
-      </div>
-      <div class="row">
-        <div class="k">Last Price</div>
-        <div class="v mono" id="price">—</div>
-      </div>
-      <div class="row">
-        <div class="k">Updated</div>
-        <div class="v mono" id="updated">—</div>
-      </div>
-      <p class="hint">
-        Price is fetched from Binance public endpoint (no API key). If blocked, the simulator still works.
-      </p>
-      <div class="actions">
-        <button id="refreshPrice" type="button">Refresh price</button>
-      </div>
-    </section>
+<header>
+  <h1>USDT Demo Trading (Educational)</h1>
+  <p>Educational demo only. No real trading. No accounts. No database.</p>
+</header>
 
-    <section class="card">
-      <h2>Demo Wallet</h2>
-      <div class="row">
-        <div class="k">Demo Balance</div>
-        <div class="v mono" id="balance">—</div>
-      </div>
-      <div class="row">
-        <div class="k">Pool</div>
-        <div class="v mono" id="pool">—</div>
-      </div>
-      <div class="row">
-        <div class="k">Next Outcome</div>
-        <div class="v" id="nextOutcome">—</div>
-      </div>
+<div class="container">
+  <div class="chart-box">
+    <div id="chart"></div>
+  </div>
 
-      <hr class="sep" />
+  <div class="panel">
+    <h2>Demo Wallet</h2>
+    <div class="row"><span>Balance</span><span id="balance">1000</span></div>
+    <div class="row"><span>Pool</span><span id="pool">0</span></div>
+    <div class="row"><span>Next Result</span><span id="next">LOSS</span></div>
 
-      <h3>Place a Demo Trade (simulated outcome)</h3>
-      <form id="tradeForm" autocomplete="off">
-        <label class="lbl" for="amount">Stake (demo points)</label>
-        <input id="amount" name="amount" type="text" inputmode="numeric" value="100" required />
-        <div class="small">
-          Loss: balance -= stake; pool += 70% of stake; fee = 30% of stake.
-          Win: payout = 30% of pool; pool resets to 0.
-          Sequence repeats: LOSS, LOSS, WIN.
-        </div>
+    <input id="amount" type="number" value="100" min="1">
+    <button id="tradeBtn">Place Demo Trade</button>
+    <button id="resetBtn">Reset Demo</button>
 
-        <div class="actions">
-          <button id="placeTrade" type="submit">Place trade</button>
-          <button id="resetDemo" type="button" class="secondary">Reset demo</button>
-        </div>
-      </form>
+    <ul class="rules">
+      <li>Fixed sequence: LOSS, LOSS, WIN</li>
+      <li>Loss: stake removed, 70% added to pool</li>
+      <li>Win: 30% of pool paid, pool resets</li>
+      <li>All logic is simulated</li>
+    </ul>
+  </div>
+</div>
 
-      <details class="rules">
-        <summary>Rules (click)</summary>
-        <ul>
-          <li>Local-only simulation using demo points.</li>
-          <li>Fixed sequence: Loss, Loss, Win (repeat).</li>
-          <li>On loss: balance decreases by stake; pool increases by 70% of stake; fee is 30% of stake.</li>
-          <li>On win: payout = 30% of current pool; balance increases by payout; pool resets to 0.</li>
-          <li>All data stored in your browser (localStorage). No server calls except price fetch.</li>
-        </ul>
-      </details>
-    </section>
-
-    <section class="card span">
-      <h2>History</h2>
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Time</th>
-              <th>Stake</th>
-              <th>Outcome</th>
-              <th>Pool Δ</th>
-              <th>Payout</th>
-              <th>Fee</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody">
-            <tr><td colspan="8" class="muted">No trades yet.</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="hint">
-        Tip: If you type Arabic-Indic digits (e.g. ١٠٠), they will be converted automatically.
-      </p>
-    </section>
-  </main>
-
-  <footer class="wrap foot">
-    <div class="pill">Local demo</div>
-    <div class="pill">Sequence: L, L, W</div>
-    <div class="pill">Loss: 70% pool / 30% fee</div>
-    <div class="pill">Win: 30% pool payout</div>
-  </footer>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
