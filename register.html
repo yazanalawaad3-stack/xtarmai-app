@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>إنشاء حساب</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<main class="container">
+  <div class="shell">
+    <div class="brand">
+      <a class="logo" href="register.html">
+        <div class="badge">S</div>
+        <div class="title">
+          <strong>إنشاء حساب</strong>
+          <span>Phone + Password + Invite</span>
+        </div>
+      </a>
+      <div class="chip">Mobile</div>
+    </div>
+
+    <section class="card">
+      <div class="head">
+        <h1 class="h1">تسجيل جديد</h1>
+        <p class="sub">اختر الدولة، أدخل رقم الهاتف، كلمة السر، كود الدعوة، ثم كابتشا بسيطة.</p>
+      </div>
+      <div class="body">
+
+        <div class="field">
+          <div class="label"><span>الدولة</span><span class="mini">اختر نداء بلدك</span></div>
+          <select id="country" aria-label="country"></select>
+        </div>
+
+        <div class="field">
+          <div class="label"><span>رقم الهاتف</span><span class="mini">بدون +</span></div>
+          <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
+          <div class="hint">سيتم حفظ الرقم بصيغة: 9617xxxxxxx (أرقام فقط).</div>
+        </div>
+
+        <div class="field">
+          <div class="label"><span>كلمة السر</span><span class="mini">حروف + أرقام</span></div>
+          <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
+          <div class="hint">على الأقل 8 أحرف وتحتوي حروف وأرقام.</div>
+        </div>
+
+        <div class="field">
+          <div class="label"><span>تأكيد كلمة السر</span><span class="mini">مرة ثانية</span></div>
+          <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
+        </div>
+
+        <div class="field">
+          <div class="label"><span>كود الدعوة</span><span class="mini">مطلوب</span></div>
+          <input id="invite" class="input" autocomplete="off" placeholder="مثال: TNEPXIKV" />
+          <div class="hint">بدون كود دعوة لن يتم إنشاء الحساب.</div>
+        </div>
+
+        <div class="field">
+          <div class="label">
+            <span>كابتشا أرقام</span>
+            <a id="refreshCaptcha" class="mini" href="#">تغيير</a>
+          </div>
+          <div class="row">
+            <div class="grow input" style="display:flex;align-items:center;justify-content:center;">
+              <span class="code" id="captchaView">0000</span>
+            </div>
+            <input id="captcha" class="input" inputmode="numeric" placeholder="اكتب الرقم" />
+          </div>
+          <div class="hint">ملاحظة: هذه كابتشا بسيطة (للشكل). الأفضل لاحقاً Turnstile / reCAPTCHA.</div>
+        </div>
+
+        <button id="register" class="btn">إنشاء حساب</button>
+
+        <div id="msg" class="alert" hidden></div>
+
+        <div class="field" style="margin-top:14px">
+          <div class="row">
+            <div class="grow"><span class="mini">عندك حساب؟</span></div>
+            <a class="mini" href="login.html">تسجيل الدخول</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="footer">
+      <span class="pill">⚠️ استخدم ANON فقط بالواجهة</span>
+    </div>
+  </div>
+</main>
+
+<script type="module" src="assets/register.js"></script>
+</body>
+</html>

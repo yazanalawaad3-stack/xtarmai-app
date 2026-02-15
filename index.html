@@ -1,217 +1,45 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demo Trading (Educational) - Pro UI</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>الرئيسية</title>
+  <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <header class="top">
-    <div class="brand">
-      <div class="dot"></div>
-      <div>
-        <div class="title">Demo Trading Terminal</div>
-        <div class="sub">Educational demo only. No real trading. Local-only demo points.</div>
+<main class="container">
+  <div class="shell">
+    <section class="card">
+      <div class="head">
+        <h1 class="h1">أهلاً 👋</h1>
+        <p class="sub">تم تسجيل الدخول بنجاح. هذه صفحة اختبار.</p>
       </div>
-    </div>
-
-    <div class="topRight">
-      <div class="badge">Symbol: <span class="mono" id="symbol">BTCUSDT</span></div>
-      <div class="badge">Price: <span class="mono" id="lastPrice">—</span></div>
-      <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
-    </div>
-  </header>
-
-  <main class="layout">
-    <section class="chartCard">
-      <div class="cardHead">
-        <div>
-          <div class="h">Chart</div>
-          <div class="p">Live candles drawn locally on canvas using Binance kline data. No external chart widget.</div>
-        </div>
-        <div class="right">
-          <div class="pill">1m</div>
-          <div class="pill">BINANCE</div>
-        </div>
-      </div>
-
-      <div class="chartWrap">
-        <div class="chartWrap">
-        <div class="chartInner">
-          
-        <div class="tradeBar" id="tradeBar">
-          <button class="btn buy" id="buyBtnFs" type="button">Buy</button>
-          <button class="btn sell" id="sellBtnFs" type="button">Sell</button>
-          <button class="btn ghost" id="closeBtnFs" type="button">Close</button>
-        </div>
-
-          <canvas id="chartCanvas"></canvas>
-          
-          <div class="chartToolbar">
-            <div class="tfGroup">
-              <button class="tbtn" data-tf="1m">1m</button>
-              <button class="tbtn" data-tf="5m">5m</button>
-              <button class="tbtn" data-tf="15m">15m</button>
-              <button class="tbtn" data-tf="1h">1h</button>
-              <button class="tbtn" data-tf="4h">4h</button>
-              <button class="tbtn" data-tf="1d">1d</button>
-            </div>
-            <div class="toolGroup">
-              <label class="chk"><input type="checkbox" id="sma20" checked> SMA20</label>
-              <label class="chk"><input type="checkbox" id="sma50"> SMA50</label>
-              <label class="chk"><input type="checkbox" id="ema20"> EMA20</label>
-              <button class="tbtn ghost" id="resetViewBtn" type="button">Reset view</button>
-              <button class="tbtn ghost" id="fsBtn" type="button">Fullscreen</button>
-            </div>
-          </div>
-
-          <div class="chartOverlay">
-            <div class="ovItem">Internal canvas chart</div>
-            <div class="ovItem mono">1m</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hintRow">
-        <span class="hint">This is a simulated trading UI. Actions below update demo balance + pool only.</span>
+      <div class="body">
+        <button id="logout" class="btn secondary">تسجيل الخروج</button>
+        <div id="msg" class="alert" hidden></div>
       </div>
     </section>
 
-    <aside class="side">
-      <section class="panel">
-        <div class="panelHead">
-          <div>
-            <div class="h">Order Panel</div>
-            <div class="p">Buy/Sell buttons + timer close (simulated).</div>
-          </div>
-        </div>
+    <div class="footer">
+      <span class="pill">بعدها نربط Dashboard مع profiles</span>
+    </div>
+  </div>
+</main>
 
-        <div class="stats">
-          <div class="stat">
-            <div class="k">Balance</div>
-            <div class="v mono" id="balance">—</div>
-          </div>
-          <div class="stat">
-            <div class="k">Pool</div>
-            <div class="v mono" id="pool">—</div>
-          </div>
-          <div class="stat">
-            <div class="k">Next Result</div>
-            <div class="v mono" id="nextOutcome">—</div>
-          </div>
-        </div>
+<script type="module">
+  import { supabase, showAlert } from "./assets/supabaseClient.js";
+  const btn = document.querySelector("#logout");
+  const msg = document.querySelector("#msg");
 
-        <div class="field">
-          <label for="stake">Stake (demo points)</label>
-          <input id="stake" type="text" inputmode="numeric" value="100" />
-          <div class="mini">Arabic-Indic digits are supported (e.g. ١٠٠).</div>
-        </div>
+  const { data } = await supabase.auth.getSession();
+  if (!data?.session?.user) location.href="login.html";
 
-        <div class="row2">
-          <div class="field">
-            <label for="leverage">Leverage (UI only)</label>
-            <input id="leverage" type="number" min="1" max="100" value="10" />
-          </div>
-          <div class="field">
-            <label for="duration">Duration</label>
-            <select id="duration">
-              <option value="15">15s</option>
-              <option value="30" selected>30s</option>
-              <option value="60">60s</option>
-              <option value="120">120s</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn buy" id="buyBtn" type="button">Buy / Long</button>
-          <button class="btn sell" id="sellBtn" type="button">Sell / Short</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="pos">
-          <div class="posHead">
-            <div class="h">Open Position</div>
-            <div class="p">One position at a time (demo).</div>
-          </div>
-
-          <div id="noPos" class="empty">No open position.</div>
-
-          <div id="posBox" class="posBox hidden">
-            <div class="posGrid">
-              <div>
-                <div class="k">Side</div>
-                <div class="v mono" id="posSide">—</div>
-              </div>
-              <div>
-                <div class="k">Entry Price</div>
-                <div class="v mono" id="posEntry">—</div>
-              </div>
-              <div>
-                <div class="k">Stake</div>
-                <div class="v mono" id="posStake">—</div>
-              </div>
-              <div>
-                <div class="k">Timer</div>
-                <div class="v mono" id="posTimer">—</div>
-              </div>
-            </div>
-
-            <div class="posActions">
-              <button class="btn ghost" id="closeNowBtn" type="button">Close Now</button>
-              <button class="btn ghost" id="resetBtn" type="button">Reset Demo</button>
-            </div>
-
-            <div class="rules">
-              <div class="h">Demo Rules</div>
-              <ul>
-                <li>Fixed sequence: LOSS, LOSS, WIN (repeat)</li>
-                <li>LOSS: balance -= stake; pool += 70% of stake; fee = 30% of stake</li>
-                <li>WIN: payout = 30% of pool; pool resets to 0</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panelHead">
-          <div>
-            <div class="h">History</div>
-            <div class="p">Local-only (stored in your browser).</div>
-          </div>
-        </div>
-        <div class="tableWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Time</th>
-                <th>Side</th>
-                <th>Stake</th>
-                <th>Outcome</th>
-                <th>Payout</th>
-                <th>Fee</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody id="histBody">
-              <tr><td colspan="8" class="muted">No trades yet.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </aside>
-  </main>
-
-  <footer class="foot">
-    <span class="footPill">Local demo points</span>
-    <span class="footPill">No database</span>
-    <span class="footPill">No real trading</span>
-  </footer>
-
-  <script src="app.js"></script>
+  btn.addEventListener("click", async ()=>{
+    await supabase.auth.signOut();
+    showAlert(msg, "تم تسجيل الخروج.", "ok");
+    setTimeout(()=> location.href="login.html", 500);
+  });
+</script>
 </body>
 </html>
