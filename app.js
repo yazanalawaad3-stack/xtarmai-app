@@ -1,18 +1,22 @@
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "demo_trading_pro_v1";
+  const STORAGE_KEY = "demo_trading_pro_v2";
   const SYMBOL = "BTCUSDT";
+
+  // Fixed sequence: LOSS, LOSS, WIN (repeat)
   const SEQ = ["LOSS", "LOSS", "WIN"];
 
   const DEFAULT_STATE = {
     balance: 1000,
+    // Pool is the sum of the last two LOSS stakes (full stake amounts)
     pool: 0,
     step: 0,
     history: [],
     lastPrice: null,
     lastUpdatedAt: null,
-    position: null
+    position: null,
+    lastTwoLosses: [] // array of stakes (max length 2)
   };
 
   const el = (id) => document.getElementById(id);
@@ -47,7 +51,8 @@
       return {
         ...structuredClone(DEFAULT_STATE),
         ...parsed,
-        history: Array.isArray(parsed.history) ? parsed.history : []
+        history: Array.isArray(parsed.history) ? parsed.history : [],
+        lastTwoLosses: Array.isArray(parsed.lastTwoLosses) ? parsed.lastTwoLosses : []
       };
     } catch {
       return structuredClone(DEFAULT_STATE);
@@ -65,6 +70,11 @@
   function setText(id, v) {
     const node = el(id);
     if (node) node.textContent = v;
+  }
+
+  function recomputePool(state) {
+    const sum = state.lastTwoLosses.reduce((a, b) => a + Number(b || 0), 0);
+    state.pool = Number.isFinite(sum) ? sum : 0;
   }
 
   function render(state) {
@@ -178,13 +188,21 @@
     let fee = 0;
 
     if (outcome === "LOSS") {
-      const toPool = stake * 0.70;
-      fee = stake * 0.30;
-      state.pool += toPool;
+      // Full stake is a loss. Track only the last two losses.
       state.balance -= stake;
+
+      state.lastTwoLosses.push(stake);
+      if (state.lastTwoLosses.length > 2) state.lastTwoLosses.shift();
+
+      recomputePool(state);
     } else {
+      // WIN: user gets 30% of the sum of the last two losses, then reset.
+      recomputePool(state);
       payout = state.pool * 0.30;
+
       state.balance += payout;
+
+      state.lastTwoLosses = [];
       state.pool = 0;
     }
 
@@ -208,7 +226,6 @@
     const { side, stake } = state.position;
     const outcome = nextOutcome(state);
 
-    // Apply your demo system (not real market PnL)
     settleTrade(state, side, stake, outcome);
 
     state.position = null;
@@ -243,8 +260,27 @@
     }
   }
 
+  function patchRulesText() {
+    // Update the rules list in the DOM (if present) to reflect the new logic.
+    const rules = document.querySelector(".rules ul");
+    if (!rules) return;
+    rules.innerHTML = "";
+    const items = [
+      "Fixed sequence: LOSS, LOSS, WIN (repeat)",
+      "LOSS: balance -= stake; store the stake as a loss",
+      "Pool = sum of the last two losses (full stakes)",
+      "WIN: payout = 30% of Pool; then Pool resets to 0"
+    ];
+    for (const t of items) {
+      const li = document.createElement("li");
+      li.textContent = t;
+      rules.appendChild(li);
+    }
+  }
+
   function init() {
     const state = loadState();
+    recomputePool(state);
 
     el("stake").addEventListener("input", () => {
       const before = el("stake").value;
@@ -258,11 +294,13 @@
     el("resetBtn").addEventListener("click", () => {
       Object.assign(state, structuredClone(DEFAULT_STATE));
       saveState(state);
+      patchRulesText();
       render(state);
       toast("Demo reset.");
     });
     el("refreshBtn").addEventListener("click", () => refreshPrice(state));
 
+    patchRulesText();
     render(state);
     refreshPrice(state);
     startTimerLoop(state);
