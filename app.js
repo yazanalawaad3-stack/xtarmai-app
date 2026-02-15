@@ -1,12 +1,21 @@
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "demo_trading_pro_v3";
+  const STORAGE_KEY = "demo_trading_pro_v4";
   const SYMBOL = "BTCUSDT";
+
+  // Parameters
+  const LOSS_TO_POOL_RATE = 0.30;   // 30% goes to Pool
+  const LOSS_FEE_RATE = 0.70;       // 70% is fee/burn
+  const WIN_CAP_RATE = 0.30;        // Winner max = 30% of own stake
+  const COLLECT_LOSS_COUNT = 2;     // First 2 trades in each cycle are LOSS (collect)
 
   const DEFAULT_STATE = {
     balance: 1000,
     pool: 0,
+    // phase: "collect" or "payout"
+    phase: "collect",
+    collectRemaining: COLLECT_LOSS_COUNT,
     history: [],
     lastPrice: null,
     position: null
@@ -55,10 +64,17 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
+  function nextOutcome(state) {
+    if (state.phase === "collect") return "LOSS";
+    // payout phase
+    return state.pool > 0 ? "WIN" : "LOSS";
+  }
+
   function render(state) {
     el("symbol").textContent = SYMBOL;
     el("balance").textContent = fmt(state.balance);
     el("pool").textContent = fmt(state.pool);
+    el("nextOutcome").textContent = nextOutcome(state);
     el("lastPrice").textContent = state.lastPrice == null ? "—" : fmt(state.lastPrice);
 
     const hasPos = !!state.position;
@@ -94,6 +110,7 @@
         fmt(h.stake),
         h.outcome,
         fmt(h.payout),
+        fmt(h.fee),
         fmt(h.balanceAfter)
       ];
       for (const c of cells) {
@@ -108,6 +125,7 @@
   async function fetchLastPrice() {
     const url = "https://api.binance.com/api/v3/ticker/price?symbol=" + encodeURIComponent(SYMBOL);
     const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
     const p = Number(data.price);
     if (!Number.isFinite(p)) throw new Error("Invalid price");
@@ -126,65 +144,121 @@
     n.style.background = "rgba(15,22,32,.95)";
     n.style.color = "white";
     n.style.zIndex = "9999";
+    n.style.border = "1px solid rgba(255,255,255,.18)";
+    n.style.boxShadow = "0 12px 30px rgba(0,0,0,.25)";
     document.body.appendChild(n);
     setTimeout(() => n.remove(), 2400);
   }
 
+  function startNewCycle(state) {
+    state.phase = "collect";
+    state.collectRemaining = COLLECT_LOSS_COUNT;
+    state.pool = 0;
+  }
+
+  function ensurePhaseConsistency(state) {
+    if (state.pool <= 0) {
+      if (state.phase === "payout") {
+        startNewCycle(state);
+      }
+    }
+    if (state.phase === "collect" && state.collectRemaining <= 0) {
+      state.phase = "payout";
+    }
+  }
+
   function openPosition(state, side) {
     if (state.position) return toast("Close current position first.");
+
     const stake = parseStake(el("stake").value);
-    if (stake <= 0) return toast("Invalid stake.");
+    if (stake <= 0) return toast("Stake must be greater than 0.");
     if (stake > state.balance) return toast("Insufficient balance.");
 
     const duration = Number(el("duration").value);
+    if (!Number.isFinite(duration) || duration <= 0) return toast("Invalid duration.");
+
+    ensurePhaseConsistency(state);
+
     state.position = {
       side,
       stake,
       remaining: duration,
       entryPrice: state.lastPrice
     };
+
     saveState(state);
     render(state);
   }
 
-  function settleTrade(state, side, stake, isWin) {
-    let payout = 0;
+  function settleLoss(state, side, stake) {
+    const fee = stake * LOSS_FEE_RATE;
+    const toPool = stake * LOSS_TO_POOL_RATE;
 
-    if (!isWin) {
-      state.balance -= stake;
-      state.pool += stake;
-    } else {
-      const capByStake = stake * 0.30;
-      const capByPool = state.pool * 0.30;
-      payout = Math.min(capByStake, capByPool);
-      state.balance += payout;
-      state.pool -= payout;
-      if (state.pool < 0.01) state.pool = 0;
+    state.balance -= stake;
+    state.pool += toPool;
+
+    state.collectRemaining -= 1;
+    if (state.collectRemaining <= 0) state.phase = "payout";
+
+    state.history.push({
+      time: nowStr(),
+      side,
+      stake,
+      outcome: "LOSS",
+      payout: 0,
+      fee,
+      balanceAfter: state.balance
+    });
+  }
+
+  function settleWin(state, side, stake) {
+    // payout is limited by: 30% of stake, and remaining pool
+    const capByStake = stake * WIN_CAP_RATE;
+    const payout = Math.min(capByStake, state.pool);
+
+    state.balance += payout;
+    state.pool -= payout;
+
+    if (state.pool < 0.01) state.pool = 0;
+    if (state.pool === 0) {
+      startNewCycle(state);
     }
 
     state.history.push({
       time: nowStr(),
       side,
       stake,
-      outcome: isWin ? "WIN" : "LOSS",
+      outcome: "WIN",
       payout,
+      fee: 0,
       balanceAfter: state.balance
     });
-    if (state.history.length > 200) state.history.shift();
   }
 
   function closePosition(state) {
     if (!state.position) return;
+
+    ensurePhaseConsistency(state);
+
     const { side, stake } = state.position;
 
-    // Demo logic: alternate outcomes based on pool size (simple & fair)
-    const isWin = state.pool > 0 && Math.random() < 0.5;
+    if (state.phase === "collect") {
+      settleLoss(state, side, stake);
+    } else {
+      if (state.pool <= 0) {
+        startNewCycle(state);
+        settleLoss(state, side, stake);
+      } else {
+        settleWin(state, side, stake);
+      }
+    }
 
-    settleTrade(state, side, stake, isWin);
+    if (state.history.length > 300) state.history.shift();
+
     state.position = null;
     saveState(state);
     render(state);
-    toast(isWin ? "WIN" : "LOSS");
+    toast(state.history[state.history.length - 1].outcome);
   }
 
   function startTimer(state) {
@@ -202,28 +276,51 @@
       state.lastPrice = await fetchLastPrice();
       saveState(state);
       render(state);
-    } catch {}
+    } catch {
+      // ignore
+    }
+  }
+
+  function patchRulesText() {
+    const rules = document.querySelector(".rules ul");
+    if (!rules) return;
+    rules.innerHTML = "";
+    const items = [
+      "Cycle: 2x LOSS (collect) then WIN payouts until Pool is empty",
+      "LOSS: balance -= stake; Pool += 30% of stake; fee = 70% of stake",
+      "WIN: payout = min(30% of stake, Pool); Pool -= payout",
+      "When Pool reaches 0: cycle restarts (collect 2 losses again)"
+    ];
+    for (const t of items) {
+      const li = document.createElement("li");
+      li.textContent = t;
+      rules.appendChild(li);
+    }
   }
 
   function init() {
     const state = loadState();
+    ensurePhaseConsistency(state);
 
     el("stake").addEventListener("input", () => {
-      const v = normalizeDigits(el("stake").value);
-      el("stake").value = v;
+      const before = el("stake").value;
+      const normalized = normalizeDigits(before);
+      if (normalized !== before) el("stake").value = normalized;
     });
 
-    el("buyBtn").onclick = () => openPosition(state, "BUY");
-    el("sellBtn").onclick = () => openPosition(state, "SELL");
-    el("closeNowBtn").onclick = () => closePosition(state);
-    el("resetBtn").onclick = () => {
+    el("buyBtn").addEventListener("click", () => openPosition(state, "BUY"));
+    el("sellBtn").addEventListener("click", () => openPosition(state, "SELL"));
+    el("closeNowBtn").addEventListener("click", () => closePosition(state));
+    el("resetBtn").addEventListener("click", () => {
       Object.assign(state, structuredClone(DEFAULT_STATE));
       saveState(state);
+      patchRulesText();
       render(state);
       toast("Demo reset.");
-    };
-    el("refreshBtn").onclick = () => refreshPrice(state);
+    });
+    el("refreshBtn").addEventListener("click", () => refreshPrice(state));
 
+    patchRulesText();
     render(state);
     refreshPrice(state);
     startTimer(state);
