@@ -1,43 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>USDT Demo Trading - Candles</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Demo Trading (Educational) - Pro UI</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="top">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <div class="title">Demo Trading Terminal</div>
+        <div class="sub">Educational demo only. No real trading. Local-only demo points.</div>
+      </div>
+    </div>
 
-<header>
-  <h1>USDT Demo Trading (Educational)</h1>
-  <p>Educational demo only. No real trading. No accounts. No database.</p>
-</header>
+    <div class="topRight">
+      <div class="badge">Symbol: <span class="mono" id="symbol">BTCUSDT</span></div>
+      <div class="badge">Price: <span class="mono" id="lastPrice">—</span></div>
+      <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
+    </div>
+  </header>
 
-<div class="container">
-  <div class="chart-box">
-    <div id="chart"></div>
-  </div>
+  <main class="layout">
+    <section class="chartCard">
+      <div class="cardHead">
+        <div>
+          <div class="h">Chart</div>
+          <div class="p">Live candles (TradingView widget). If it does not load, your browser or network is blocking external widgets.</div>
+        </div>
+        <div class="right">
+          <div class="pill">1m</div>
+          <div class="pill">BINANCE</div>
+        </div>
+      </div>
 
-  <div class="panel">
-    <h2>Demo Wallet</h2>
-    <div class="row"><span>Balance</span><span id="balance">1000</span></div>
-    <div class="row"><span>Pool</span><span id="pool">0</span></div>
-    <div class="row"><span>Next Result</span><span id="next">LOSS</span></div>
+      <div class="chartWrap">
+        <div id="tvWrap">
+          <!-- TradingView Advanced Chart widget -->
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+            (function () {
+              if (!window.TradingView) return;
+              new TradingView.widget({
+                autosize: true,
+                symbol: "BINANCE:BTCUSDT",
+                interval: "1",
+                timezone: "Etc/UTC",
+                theme: "dark",
+                style: "1",
+                locale: "en",
+                enable_publishing: false,
+                hide_top_toolbar: false,
+                hide_legend: false,
+                allow_symbol_change: false,
+                container_id: "tvWrap"
+              });
+            })();
+          </script>
+        </div>
+      </div>
 
-    <input id="amount" type="number" value="100" min="1">
-    <button id="tradeBtn">Place Demo Trade</button>
-    <button id="resetBtn">Reset Demo</button>
+      <div class="hintRow">
+        <span class="hint">This is a simulated trading UI. Actions below update demo balance + pool only.</span>
+      </div>
+    </section>
 
-    <ul class="rules">
-      <li>Fixed sequence: LOSS, LOSS, WIN</li>
-      <li>Loss: stake removed, 70% added to pool</li>
-      <li>Win: 30% of pool paid, pool resets</li>
-      <li>All logic is simulated</li>
-    </ul>
-  </div>
-</div>
+    <aside class="side">
+      <section class="panel">
+        <div class="panelHead">
+          <div>
+            <div class="h">Order Panel</div>
+            <div class="p">Buy/Sell buttons + timer close (simulated).</div>
+          </div>
+        </div>
 
-<script src="app.js"></script>
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Balance</div>
+            <div class="v mono" id="balance">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Pool</div>
+            <div class="v mono" id="pool">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Next Result</div>
+            <div class="v mono" id="nextOutcome">—</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="stake">Stake (demo points)</label>
+          <input id="stake" type="text" inputmode="numeric" value="100" />
+          <div class="mini">Arabic-Indic digits are supported (e.g. ١٠٠).</div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="leverage">Leverage (UI only)</label>
+            <input id="leverage" type="number" min="1" max="100" value="10" />
+          </div>
+          <div class="field">
+            <label for="duration">Duration</label>
+            <select id="duration">
+              <option value="15">15s</option>
+              <option value="30" selected>30s</option>
+              <option value="60">60s</option>
+              <option value="120">120s</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn buy" id="buyBtn" type="button">Buy / Long</button>
+          <button class="btn sell" id="sellBtn" type="button">Sell / Short</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="pos">
+          <div class="posHead">
+            <div class="h">Open Position</div>
+            <div class="p">One position at a time (demo).</div>
+          </div>
+
+          <div id="noPos" class="empty">No open position.</div>
+
+          <div id="posBox" class="posBox hidden">
+            <div class="posGrid">
+              <div>
+                <div class="k">Side</div>
+                <div class="v mono" id="posSide">—</div>
+              </div>
+              <div>
+                <div class="k">Entry Price</div>
+                <div class="v mono" id="posEntry">—</div>
+              </div>
+              <div>
+                <div class="k">Stake</div>
+                <div class="v mono" id="posStake">—</div>
+              </div>
+              <div>
+                <div class="k">Timer</div>
+                <div class="v mono" id="posTimer">—</div>
+              </div>
+            </div>
+
+            <div class="posActions">
+              <button class="btn ghost" id="closeNowBtn" type="button">Close Now</button>
+              <button class="btn ghost" id="resetBtn" type="button">Reset Demo</button>
+            </div>
+
+            <div class="rules">
+              <div class="h">Demo Rules</div>
+              <ul>
+                <li>Fixed sequence: LOSS, LOSS, WIN (repeat)</li>
+                <li>LOSS: balance -= stake; pool += 70% of stake; fee = 30% of stake</li>
+                <li>WIN: payout = 30% of pool; pool resets to 0</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panelHead">
+          <div>
+            <div class="h">History</div>
+            <div class="p">Local-only (stored in your browser).</div>
+          </div>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Time</th>
+                <th>Side</th>
+                <th>Stake</th>
+                <th>Outcome</th>
+                <th>Payout</th>
+                <th>Fee</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody id="histBody">
+              <tr><td colspan="8" class="muted">No trades yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <span class="footPill">Local demo points</span>
+    <span class="footPill">No database</span>
+    <span class="footPill">No real trading</span>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>

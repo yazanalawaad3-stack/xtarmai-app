@@ -1,67 +1,273 @@
-const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-  layout: { background: { color: '#121a24' }, textColor: '#d9d9d9' },
-  grid: { vertLines: { color: '#223246' }, horzLines: { color: '#223246' } },
-  timeScale: { timeVisible: true, secondsVisible: false },
-});
+(() => {
+  "use strict";
 
-const candleSeries = chart.addCandlestickSeries({
-  upColor: '#26a69a',
-  downColor: '#ef5350',
-  borderVisible: false,
-  wickUpColor: '#26a69a',
-  wickDownColor: '#ef5350',
-});
+  const STORAGE_KEY = "demo_trading_pro_v1";
+  const SYMBOL = "BTCUSDT";
+  const SEQ = ["LOSS", "LOSS", "WIN"];
 
-async function loadCandles() {
-  const res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=200');
-  const data = await res.json();
-  const candles = data.map(c => ({
-    time: c[0] / 1000,
-    open: parseFloat(c[1]),
-    high: parseFloat(c[2]),
-    low: parseFloat(c[3]),
-    close: parseFloat(c[4])
-  }));
-  candleSeries.setData(candles);
-}
-loadCandles();
+  const DEFAULT_STATE = {
+    balance: 1000,
+    pool: 0,
+    step: 0,
+    history: [],
+    lastPrice: null,
+    lastUpdatedAt: null,
+    position: null
+  };
 
-let state = {
-  balance: 1000,
-  pool: 0,
-  step: 0
-};
+  const el = (id) => document.getElementById(id);
 
-const seq = ['LOSS','LOSS','WIN'];
+  const fmt = (n) => {
+    const x = Number(n);
+    if (!Number.isFinite(x)) return "0";
+    return x.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  };
 
-function updateUI(){
-  document.getElementById('balance').textContent = state.balance.toFixed(2);
-  document.getElementById('pool').textContent = state.pool.toFixed(2);
-  document.getElementById('next').textContent = seq[state.step];
-}
+  const nowStr = () => new Date().toLocaleString();
 
-document.getElementById('tradeBtn').onclick = () => {
-  const stake = Number(document.getElementById('amount').value);
-  if(stake <= 0 || stake > state.balance) return;
-
-  const result = seq[state.step];
-
-  if(result === 'LOSS'){
-    state.balance -= stake;
-    state.pool += stake * 0.7;
-  } else {
-    const win = state.pool * 0.3;
-    state.balance += win;
-    state.pool = 0;
+  function normalizeDigits(s) {
+    return String(s)
+      .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+      .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0));
   }
 
-  state.step = (state.step + 1) % 3;
-  updateUI();
-};
+  function parseStake(input) {
+    const s = normalizeDigits(input).replace(/[^0-9]/g, "");
+    if (!s) return 0;
+    const n = Number(s);
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(0, Math.floor(n));
+  }
 
-document.getElementById('resetBtn').onclick = () => {
-  state = { balance:1000, pool:0, step:0 };
-  updateUI();
-};
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return structuredClone(DEFAULT_STATE);
+      const parsed = JSON.parse(raw);
+      return {
+        ...structuredClone(DEFAULT_STATE),
+        ...parsed,
+        history: Array.isArray(parsed.history) ? parsed.history : []
+      };
+    } catch {
+      return structuredClone(DEFAULT_STATE);
+    }
+  }
 
-updateUI();
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function nextOutcome(state) {
+    return SEQ[state.step % SEQ.length];
+  }
+
+  function setText(id, v) {
+    const node = el(id);
+    if (node) node.textContent = v;
+  }
+
+  function render(state) {
+    setText("symbol", SYMBOL);
+    setText("balance", fmt(state.balance));
+    setText("pool", fmt(state.pool));
+    setText("nextOutcome", nextOutcome(state));
+    setText("lastPrice", state.lastPrice == null ? "—" : fmt(state.lastPrice));
+
+    const hasPos = !!state.position;
+    el("noPos").classList.toggle("hidden", hasPos);
+    el("posBox").classList.toggle("hidden", !hasPos);
+
+    if (hasPos) {
+      setText("posSide", state.position.side);
+      setText("posEntry", state.position.entryPrice == null ? "—" : fmt(state.position.entryPrice));
+      setText("posStake", fmt(state.position.stake));
+      setText("posTimer", state.position.remaining + "s");
+    }
+
+    const tbody = el("histBody");
+    tbody.innerHTML = "";
+    if (!state.history.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 8;
+      td.className = "muted";
+      td.textContent = "No trades yet.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    state.history.slice().reverse().forEach((h, i) => {
+      const tr = document.createElement("tr");
+      const cells = [
+        String(state.history.length - i),
+        h.time,
+        h.side,
+        fmt(h.stake),
+        h.outcome,
+        fmt(h.payout),
+        fmt(h.fee),
+        fmt(h.balanceAfter)
+      ];
+      for (const c of cells) {
+        const td = document.createElement("td");
+        td.textContent = c;
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function fetchLastPrice() {
+    const url = "https://api.binance.com/api/v3/ticker/price?symbol=" + encodeURIComponent(SYMBOL);
+    const res = await fetch(url, { method: "GET" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    const p = Number(data.price);
+    if (!Number.isFinite(p)) throw new Error("Invalid price");
+    return p;
+  }
+
+  function toast(message) {
+    const n = document.createElement("div");
+    n.textContent = message;
+    n.style.position = "fixed";
+    n.style.left = "50%";
+    n.style.bottom = "18px";
+    n.style.transform = "translateX(-50%)";
+    n.style.padding = "10px 12px";
+    n.style.borderRadius = "12px";
+    n.style.border = "1px solid rgba(255,255,255,.18)";
+    n.style.background = "rgba(15,22,32,.96)";
+    n.style.color = "white";
+    n.style.zIndex = "9999";
+    n.style.maxWidth = "92vw";
+    n.style.boxShadow = "0 12px 30px rgba(0,0,0,.25)";
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 2600);
+  }
+
+  function openPosition(state, side) {
+    if (state.position) {
+      toast("Close the current position first.");
+      return;
+    }
+
+    const stake = parseStake(el("stake").value);
+    if (stake <= 0) return toast("Stake must be greater than 0.");
+    if (stake > state.balance) return toast("Insufficient balance.");
+
+    const duration = Number(el("duration").value);
+    if (!Number.isFinite(duration) || duration <= 0) return toast("Invalid duration.");
+
+    state.position = {
+      side,
+      stake,
+      duration,
+      remaining: duration,
+      entryPrice: state.lastPrice
+    };
+
+    saveState(state);
+    render(state);
+  }
+
+  function settleTrade(state, side, stake, outcome) {
+    let payout = 0;
+    let fee = 0;
+
+    if (outcome === "LOSS") {
+      const toPool = stake * 0.70;
+      fee = stake * 0.30;
+      state.pool += toPool;
+      state.balance -= stake;
+    } else {
+      payout = state.pool * 0.30;
+      state.balance += payout;
+      state.pool = 0;
+    }
+
+    state.step = (state.step + 1) % SEQ.length;
+
+    state.history.push({
+      time: nowStr(),
+      side,
+      stake,
+      outcome,
+      payout,
+      fee,
+      balanceAfter: state.balance
+    });
+    if (state.history.length > 200) state.history.shift();
+  }
+
+  function closePosition(state) {
+    if (!state.position) return;
+
+    const { side, stake } = state.position;
+    const outcome = nextOutcome(state);
+
+    // Apply your demo system (not real market PnL)
+    settleTrade(state, side, stake, outcome);
+
+    state.position = null;
+    saveState(state);
+    render(state);
+
+    toast("Closed: " + outcome);
+  }
+
+  function startTimerLoop(state) {
+    setInterval(() => {
+      if (!state.position) return;
+      state.position.remaining -= 1;
+      if (state.position.remaining <= 0) {
+        closePosition(state);
+        return;
+      }
+      saveState(state);
+      render(state);
+    }, 1000);
+  }
+
+  async function refreshPrice(state) {
+    try {
+      const p = await fetchLastPrice();
+      state.lastPrice = p;
+      state.lastUpdatedAt = nowStr();
+      saveState(state);
+      render(state);
+    } catch {
+      toast("Price fetch failed.");
+    }
+  }
+
+  function init() {
+    const state = loadState();
+
+    el("stake").addEventListener("input", () => {
+      const before = el("stake").value;
+      const normalized = normalizeDigits(before);
+      if (normalized !== before) el("stake").value = normalized;
+    });
+
+    el("buyBtn").addEventListener("click", () => openPosition(state, "BUY"));
+    el("sellBtn").addEventListener("click", () => openPosition(state, "SELL"));
+    el("closeNowBtn").addEventListener("click", () => closePosition(state));
+    el("resetBtn").addEventListener("click", () => {
+      Object.assign(state, structuredClone(DEFAULT_STATE));
+      saveState(state);
+      render(state);
+      toast("Demo reset.");
+    });
+    el("refreshBtn").addEventListener("click", () => refreshPrice(state));
+
+    render(state);
+    refreshPrice(state);
+    startTimerLoop(state);
+    setInterval(() => refreshPrice(state), 5000);
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
