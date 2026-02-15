@@ -29,6 +29,42 @@
         <div>
           <div class="h">Chart</div>
           <div class="p">Live candles drawn locally on canvas using Binance kline data. No external chart widget.</div>
+
+      <div class="chartToolbar">
+            <div class="tfGroup">
+              <button class="tbtn" id="tfBtn" type="button">Timeframe</button>
+              <div class="tfMenu hidden" id="tfMenu">
+                <div class="tfRow">
+                  <label class="tfLbl">Interval</label>
+                  <select id="tfSelect" class="tfSelect">
+                    <option value="1m">1m</option>
+                    <option value="3m">3m</option>
+                    <option value="5m">5m</option>
+                    <option value="15m">15m</option>
+                    <option value="30m">30m</option>
+                    <option value="1h">1h</option>
+                    <option value="2h">2h</option>
+                    <option value="4h">4h</option>
+                    <option value="6h">6h</option>
+                    <option value="12h">12h</option>
+                    <option value="1d">1d</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="toolGroup">
+              <div class="symBox">
+                <input id="symInput" class="symInput" value="BTCUSDT" inputmode="latin" autocomplete="off" spellcheck="false">
+                <button class="tbtn ghost" id="symApplyBtn" type="button">Apply</button>
+              </div>
+              <label class="chk"><input type="checkbox" id="sma20" checked> SMA20</label>
+              <label class="chk"><input type="checkbox" id="sma50"> SMA50</label>
+              <label class="chk"><input type="checkbox" id="ema20"> EMA20</label>
+              <button class="tbtn ghost" id="resetViewBtn" type="button">Reset view</button>
+              <button class="tbtn ghost" id="fsBtn" type="button">Fullscreen</button>
+            </div>
+          </div>
+
         </div>
         <div class="right">
           <div class="pill">1m</div>

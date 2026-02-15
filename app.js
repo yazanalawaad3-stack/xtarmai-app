@@ -446,6 +446,8 @@
     // timeframe active is handled by tfSelect
     const tfSelect = document.getElementById("tfSelect");
     if (tfSelect) tfSelect.value = state.tf;
+    const tfBtn = document.getElementById("tfBtn");
+    if (tfBtn) tfBtn.textContent = state.tf;
 
     // history
     const tbody = el("histBody");
@@ -802,7 +804,6 @@
     tfSelect.addEventListener("change", () => {
       setTimeframe(state, tfSelect.value);
       closeTfMenu();
-    });
     });
 
     // symbol apply

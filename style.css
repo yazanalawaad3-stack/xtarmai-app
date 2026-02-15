@@ -338,3 +338,29 @@ body.fsMode .tradeBar{
   .symInput{width:92px}
   .tfMenu{min-width:200px}
 }
+
+
+/* Toolbar is now outside canvas */
+.chartToolbar{
+  position:relative;
+  left:auto; right:auto; top:auto;
+  margin:12px 0 10px;
+  padding:10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(15,22,32,.45);
+}
+.chartInner{ min-height:520px; }
+.chartOverlay{ top:12px; }
+
+/* Fullscreen: keep toolbar pinned at top */
+body.fsMode .chartToolbar{
+  position:sticky;
+  top:0;
+  margin:0;
+  border-radius:0;
+  border-left:0;border-right:0;
+  z-index:9999;
+  background:rgba(15,22,32,.92);
+  backdrop-filter: blur(10px);
+}
