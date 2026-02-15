@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demo Trading Simulator (USDT BEP-20) - Local Only</title>
+  <title>Demo Trading Simulator - Local Only</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -54,12 +54,14 @@
 
       <hr class="sep" />
 
-      <h3>Place a Demo Trade</h3>
+      <h3>Place a Demo Trade (simulated outcome)</h3>
       <form id="tradeForm" autocomplete="off">
         <label class="lbl" for="amount">Stake (demo points)</label>
-        <input id="amount" name="amount" type="number" min="1" step="1" value="100" required />
+        <input id="amount" name="amount" type="text" inputmode="numeric" value="100" required />
         <div class="small">
-          Loss adds 70% of stake into the pool and burns 30% as fee. Win pays 30% of the pool, then resets the pool.
+          Loss: balance -= stake; pool += 70% of stake; fee = 30% of stake.
+          Win: payout = 30% of pool; pool resets to 0.
+          Sequence repeats: LOSS, LOSS, WIN.
         </div>
 
         <div class="actions">
@@ -101,6 +103,9 @@
           </tbody>
         </table>
       </div>
+      <p class="hint">
+        Tip: If you type Arabic-Indic digits (e.g. ١٠٠), they will be converted automatically.
+      </p>
     </section>
   </main>
 

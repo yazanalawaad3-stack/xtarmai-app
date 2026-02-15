@@ -5,7 +5,7 @@
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "demo_trading_state_v1";
+  const STORAGE_KEY = "demo_trading_state_v2";
 
   const DEFAULT_STATE = {
     balance: 1000,
@@ -13,7 +13,8 @@
     step: 0, // 0->L, 1->L, 2->W, repeat
     history: [],
     lastPrice: null,
-    lastPriceUpdatedAt: null
+    lastPriceUpdatedAt: null,
+    symbol: "BTCUSDT"
   };
 
   const OUTCOMES = ["LOSS", "LOSS", "WIN"];
@@ -55,10 +56,14 @@
     el("balance").textContent = fmt(state.balance);
     el("pool").textContent = fmt(state.pool);
     el("nextOutcome").textContent = nextOutcome(state);
+    el("symbol").textContent = state.symbol;
 
     if (state.lastPrice != null) {
       el("price").textContent = fmt(state.lastPrice);
       el("updated").textContent = state.lastPriceUpdatedAt || "—";
+    } else {
+      el("price").textContent = "—";
+      el("updated").textContent = "—";
     }
 
     const body = el("historyBody");
@@ -95,10 +100,20 @@
     });
   }
 
-  function clampAmount(v) {
-    const n = Math.floor(Number(v));
+  function normalizeDigits(s) {
+    // Convert Arabic-Indic (0660-0669) and Eastern Arabic-Indic (06F0-06F9) to ASCII digits.
+    return String(s)
+      .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+      .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06F0));
+  }
+
+  function parseStake(input) {
+    // Keep only digits. This avoids issues with locale separators.
+    const s = normalizeDigits(input).replace(/[^0-9]/g, "");
+    if (!s) return 0;
+    const n = Number(s);
     if (!Number.isFinite(n)) return 0;
-    return Math.max(0, n);
+    return Math.max(0, Math.floor(n));
   }
 
   function placeTrade(state, stake) {
@@ -142,7 +157,7 @@
     return { ok: true };
   }
 
-  async function fetchBinancePrice(symbol = "BTCUSDT") {
+  async function fetchBinancePrice(symbol) {
     const url = "https://api.binance.com/api/v3/ticker/price?symbol=" + encodeURIComponent(symbol);
     const res = await fetch(url, { method: "GET" });
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -175,9 +190,17 @@
     let state = loadState();
     render(state);
 
+    const amountInput = el("amount");
+    // Auto-normalize digits as the user types.
+    amountInput.addEventListener("input", () => {
+      const before = amountInput.value;
+      const normalized = normalizeDigits(before);
+      if (normalized !== before) amountInput.value = normalized;
+    });
+
     el("tradeForm").addEventListener("submit", (e) => {
       e.preventDefault();
-      const stake = clampAmount(el("amount").value);
+      const stake = parseStake(amountInput.value);
       const r = placeTrade(state, stake);
       if (!r.ok) {
         toast(r.message);
@@ -196,7 +219,7 @@
 
     const refresh = async () => {
       try {
-        const price = await fetchBinancePrice("BTCUSDT");
+        const price = await fetchBinancePrice(state.symbol);
         state.lastPrice = price;
         state.lastPriceUpdatedAt = nowStr();
         saveState(state);
@@ -208,7 +231,6 @@
 
     el("refreshPrice").addEventListener("click", refresh);
 
-    // Auto refresh once on load (non-blocking).
     refresh();
   }
 
