@@ -1,4 +1,4 @@
-import { supabase, normalizePhone, phoneToEmail, setBusy, showAlert, hideAlert } from "./supabaseClient.js";
+import { supabase, normalizePhone, phoneToEmail, setBusy, showAlert, hideAlert, assertSupabaseKey } from "./supabaseClient.js";
 import { COUNTRIES } from "./countries.js";
 
 const countryEl = document.querySelector("#country");
@@ -11,6 +11,11 @@ const captchaEl = document.querySelector("#captcha");
 const refreshCaptchaBtn = document.querySelector("#refreshCaptcha");
 const btn = document.querySelector("#register");
 const msgEl = document.querySelector("#msg");
+
+const keyCheck = assertSupabaseKey();
+if (!keyCheck.ok) {
+  showAlert(msgEl, keyCheck.msg, "err");
+}
 
 function fillCountries(){
   for (const c of COUNTRIES){
