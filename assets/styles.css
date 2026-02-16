@@ -1,0 +1,151 @@
+:root{
+  --bg:#0b1220;
+  --card:#0f1b33;
+  --text:#eaf0ff;
+  --muted:#9fb0d0;
+  --brand:#4f8cff;
+  --brand2:#7c5cff;
+  --danger:#ff4d6d;
+  --ok:#23c483;
+  --border:rgba(255,255,255,.10);
+  --shadow: 0 20px 60px rgba(0,0,0,.45);
+  --radius:18px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+  color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 20% 10%, rgba(79,140,255,.22), transparent 60%),
+    radial-gradient(900px 500px at 90% 20%, rgba(124,92,255,.18), transparent 55%),
+    radial-gradient(1200px 900px at 60% 100%, rgba(35,196,131,.12), transparent 55%),
+    var(--bg);
+}
+
+.container{
+  min-height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px 14px 34px;
+}
+
+.shell{width:min(420px, 100%)}
+
+.brand{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin: 0 6px 14px;
+}
+.brand .logo{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  text-decoration:none;
+  color:inherit;
+}
+.badge{
+  width:38px;height:38px;border-radius:12px;
+  background: linear-gradient(135deg, var(--brand), var(--brand2));
+  box-shadow: 0 10px 30px rgba(79,140,255,.22);
+  display:grid;place-items:center;
+  font-weight:800;
+}
+.brand .title{display:flex;flex-direction:column;line-height:1.1}
+.brand .title strong{font-size:15px;letter-spacing:.2px}
+.brand .title span{font-size:12px;color:var(--muted)}
+.chip{
+  font-size:12px;color:var(--muted);
+  padding:8px 10px;border:1px solid var(--border);border-radius:999px;
+  background: rgba(255,255,255,.04);
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+}
+.card .head{
+  padding:18px 18px 10px;
+  background: linear-gradient(180deg, rgba(79,140,255,.14), transparent 70%);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.h1{margin:0;font-size:20px;letter-spacing:.2px}
+.sub{margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+
+.card .body{padding:16px 18px 18px}
+.field{margin:12px 0}
+.label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;color:var(--muted);margin-bottom:8px;
+}
+.input, select{
+  width:100%;
+  padding:14px 14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(8,16,32,.55);
+  color:var(--text);
+  outline:none;
+  font-size:15px;
+}
+.input:focus, select:focus{
+  border-color: rgba(79,140,255,.55);
+  box-shadow: 0 0 0 4px rgba(79,140,255,.18);
+}
+.hint{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5}
+
+.row{display:flex; gap:10px; align-items:center}
+.row .grow{flex:1}
+
+.btn{
+  width:100%;
+  border:0;border-radius:14px;
+  padding:13px 14px;
+  background: linear-gradient(135deg, var(--brand), var(--brand2));
+  color:white;font-weight:700;font-size:15px;
+  cursor:pointer;
+  box-shadow: 0 14px 40px rgba(79,140,255,.25);
+}
+.btn.secondary{
+  background: rgba(255,255,255,.06);
+  box-shadow:none;
+  border:1px solid rgba(255,255,255,.10);
+  font-weight:600;
+}
+.btn:active{transform: scale(.99)}
+.btn[disabled]{filter: grayscale(.5) brightness(.8); cursor:not-allowed}
+
+.alert{
+  margin:12px 0 0;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  font-size:13px;
+  line-height:1.45;
+  white-space:pre-line;
+}
+.alert.ok{border-color: rgba(35,196,131,.35); background: rgba(35,196,131,.10)}
+.alert.err{border-color: rgba(255,77,109,.35); background: rgba(255,77,109,.10)}
+
+.mini{font-size:12px;color:var(--muted);text-decoration:none}
+.mini:hover{color:var(--text)}
+.footer{margin: 14px 6px 0;color: var(--muted);font-size: 12px;line-height:1.5;text-align:center}
+.pill{
+  display:inline-flex;gap:8px;align-items:center;
+  padding:8px 10px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+}
+.code{
+  font-variant-numeric: tabular-nums;
+  letter-spacing:.25em;
+  font-weight:800;
+}
