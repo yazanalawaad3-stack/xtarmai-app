@@ -8,6 +8,18 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css" />
   <link rel="stylesheet" href="assets/styles.css" />
+
+  <style>
+    .inputWrap{position:relative}
+    .pwToggle{
+      position:absolute; left:10px; top:50%; transform:translateY(-50%);
+      background:transparent; border:0; cursor:pointer; font-size:16px; opacity:.85;
+    }
+    [dir="ltr"] .pwToggle{right:10px; left:auto}
+    .checkRow{display:flex; gap:10px; align-items:center; font-size:13px; opacity:.9; user-select:none}
+    .checkRow input{accent-color:#6b77ff}
+  </style>
+
 </head>
 <body>
   <main class="container">
@@ -33,20 +45,26 @@
           <div class="field">
             <div class="label">
               <span data-i18n="common.phone"></span>
-              <span class="mini">بدون +</span>
+              
             </div>
             <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n-placeholder="register.phone_ph" />
             <div class="hint">سيتم حفظ الرقم بصيغة أرقام فقط مثل: 9617xxxxxxx</div>
           </div>
 
           <div class="field">
-            <div class="label"><span data-i18n="common.password"></span><span class="mini">حروف + أرقام</span></div>
-            <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
+            <div class="label"><span data-i18n="common.password"></span></div>
+            <div class="inputWrap">
+              <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
+              <button id="togglePassword" class="pwToggle" type="button" aria-label="Show/Hide">👁</button>
+            </div>
           </div>
 
           <div class="field">
-            <div class="label"><span data-i18n="register.password2"></span><span class="mini">مرة ثانية</span></div>
-            <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
+            <div class="label"><span data-i18n="register.password2"></span></div>
+            <div class="inputWrap">
+              <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
+              <button id="togglePassword2" class="pwToggle" type="button" aria-label="Show/Hide">👁</button>
+            </div>
           </div>
 
           <div class="field">
@@ -66,7 +84,7 @@
               </div>
               <input id="captcha" class="input" inputmode="numeric"  data-i18n-placeholder="register.captcha_ph" />
             </div>
-            <div class="hint">هذه  للتجربة. لاحقاً الأفضل  / .</div>
+            
           </div>
 
           <button id="register" class="btn" type="button" data-i18n="register.submit">إنشاء حساب</button>
