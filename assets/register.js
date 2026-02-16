@@ -1,107 +1,109 @@
-import { supabase, normalizePhone, setBusy, showAlert, hideAlert, assertSupabaseKey } from "./supabaseClient.js";
+import { supabase, normalizePhone, setBusy, showAlert, hideAlert } from "./supabaseClient.js";
+import { t } from "./i18n.js";
 
-const COUNTRIES = [
-  { name: "لبنان", dial: "961" },
-  { name: "سوريا", dial: "963" },
-  { name: "السعودية", dial: "966" },
-  { name: "الإمارات", dial: "971" },
-  { name: "قطر", dial: "974" },
-  { name: "الكويت", dial: "965" },
-  { name: "العراق", dial: "964" },
-  { name: "الأردن", dial: "962" },
-  { name: "مصر", dial: "20" },
-  { name: "تركيا", dial: "90" },
-];
-
-const countryEl = document.querySelector("#country");
 const phoneEl = document.querySelector("#phone");
 const passEl = document.querySelector("#password");
 const pass2El = document.querySelector("#password2");
 const inviteEl = document.querySelector("#invite");
+const captchaInEl = document.querySelector("#captcha");
+const captchaOutEl = document.querySelector("#captchaView");
+const refreshBtn = document.querySelector("#refreshCaptcha");
+const submitBtn = document.querySelector("#register");
 
-const captchaView = document.querySelector("#captchaView");
-const captchaEl = document.querySelector("#captcha");
-const refreshCaptchaBtn = document.querySelector("#refreshCaptcha");
+let iti = null;
 
-const btn = document.querySelector("#register");
-const msgEl = document.querySelector("#msg");
-
-const keyCheck = assertSupabaseKey();
-if (!keyCheck.ok) showAlert(msgEl, keyCheck.msg, "err");
-
-function fillCountries(){
-  for (const c of COUNTRIES){
-    const opt = document.createElement("option");
-    opt.value = c.dial;
-    opt.textContent = `${c.name} (+${c.dial})`;
-    countryEl.appendChild(opt);
-  }
-  countryEl.value = "961";
-}
-fillCountries();
-
-let captchaValue = "";
 function genCaptcha(){
-  captchaValue = String(Math.floor(1000 + Math.random()*9000));
-  captchaView.textContent = captchaValue;
-  captchaEl.value = "";
+  const code = String(Math.floor(1000 + Math.random()*9000));
+  captchaOutEl.textContent = code.split("").join(" ");
+  captchaOutEl.dataset.value = code;
 }
-genCaptcha();
-refreshCaptchaBtn?.addEventListener("click", (e)=>{ e.preventDefault(); genCaptcha(); });
+function getCaptchaValue(){
+  return captchaOutEl.dataset.value || "";
+}
 
 function validatePassword(p){
-  if (!p || p.length < 8) return "كلمة السر لازم تكون 8 خانات على الأقل";
+  if (!p || p.length < 8) return t("register.err_password_len");
   return null;
 }
 
-btn.addEventListener("click", async ()=>{
-  hideAlert(msgEl);
+function userFriendlyError(err){
+  const msg = (err?.message || "").toUpperCase();
 
-  const dial = countryEl.value;
-  const local = phoneEl.value;
-  const phone = normalizePhone(dial, local);
+  if (msg.includes("INVALID_INVITE") || msg.includes("INVALID INVITE")) return t("register.err_invite_required");
+  if (msg.includes("USED_INVITE_CODE IS REQUIRED")) return t("register.err_invite_required");
+  if (msg.includes("PROFILES_PHONE_KEY") || msg.includes("DUPLICATE") || msg.includes("UNIQUE")) return "رقم الهاتف مستخدم من قبل.";
+  return t("errors.generic");
+}
 
-  const invite = String(inviteEl.value||"").trim().toUpperCase();
-  const p1 = passEl.value;
-  const p2 = pass2El.value;
-  const cap = String(captchaEl.value||"").trim();
+function initPhoneInput(){
+  if (!window.intlTelInput) return;
+  iti = window.intlTelInput(phoneEl, {
+    initialCountry: "lb",
+    preferredCountries: ["lb","sa","ae","qa","kw","iq","jo","sy","eg","tr","us","gb"],
+    separateDialCode: true,
+    autoPlaceholder: "polite",
+    nationalMode: true,
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js"
+  });
+}
 
-  if (!phone || phone.length < 8) return showAlert(msgEl, "اكتب رقم هاتف صحيح.", "err");
+window.__i18nReady?.then(()=>{
+  if (captchaInEl) captchaInEl.setAttribute("placeholder", t("register.captcha_ph"));
+}).catch(()=>{});
+
+window.addEventListener("lang:changed", ()=>{
+  if (captchaInEl) captchaInEl.setAttribute("placeholder", t("register.captcha_ph"));
+});
+
+initPhoneInput();
+genCaptcha();
+
+refreshBtn?.addEventListener("click", ()=>{
+  genCaptcha();
+  captchaInEl.value = "";
+});
+
+submitBtn.addEventListener("click", async ()=>{
+  hideAlert();
+
+  const p1 = passEl.value || "";
+  const p2 = pass2El.value || "";
+  const invite = (inviteEl.value || "").trim().toUpperCase();
+
   const pwErr = validatePassword(p1);
-  if (pwErr) return showAlert(msgEl, pwErr, "err");
-  if (p1 !== p2) return showAlert(msgEl, "كلمتا السر غير متطابقتين", "err");
-  if (!invite) return showAlert(msgEl, "كود الدعوة مطلوب للتسجيل.", "err");
-  if (cap !== captchaValue) { showAlert(msgEl, "كود الكابتشا غير صحيح", "err"); genCaptcha(); return; }
+  if (pwErr) return showAlert(pwErr);
 
-  setBusy(btn, true, "جارٍ إنشاء الحساب...");
+  if (p1 !== p2) return showAlert(t("register.err_password_match"));
+
+  if (!invite) return showAlert(t("register.err_invite_required"));
+
+  const capIn = String(captchaInEl.value || "").trim();
+  if (capIn !== getCaptchaValue()) {
+    genCaptcha();
+    captchaInEl.value = "";
+    return showAlert(t("register.err_captcha"));
+  }
+
+  const dial = iti?.getSelectedCountryData()?.dialCode || "";
+  const phone = normalizePhone(dial, phoneEl.value || "");
+
+  setBusy(true, submitBtn);
+
   try {
     const { data, error } = await supabase.rpc("signup_phone", {
       p_phone: phone,
       p_password: p1,
       p_used_invite_code: invite
     });
+
     if (error) throw error;
 
-    showAlert(msgEl, "تم التسجيل بنجاح ✅ يمكنك تسجيل الدخول الآن.", "ok");
-    setTimeout(()=> location.href="login.html", 700);
-  } catch(e) {
-    const m = e?.message || String(e);
-    console.error("signup_phone failed:", e);
-
-    const ml = m.toLowerCase();
-
-    if (m.includes("INVALID_INVITE_CODE") || ml.includes("invalid invite")) {
-      showAlert(msgEl, "كود الدعوة غير صحيح.", "err");
-    } else if (m.includes("INVITE_REQUIRED") || ml.includes("used_invite_code is required")) {
-      showAlert(msgEl, "كود الدعوة مطلوب للتسجيل.", "err");
-    } else if (m.includes("WEAK_PASSWORD")) {
-      showAlert(msgEl, "كلمة السر لازم تكون 8 خانات على الأقل.", "err");
-    } else if (ml.includes("duplicate") || ml.includes("profiles_phone_key") || ml.includes("phone")) {
-      showAlert(msgEl, "هذا الرقم مسجل مسبقًا.", "err");
-    } else {
-      showAlert(msgEl, "حدث خطأ أثناء إنشاء الحساب. حاول مرة ثانية.", "err");
-    }
+    showAlert(t("register.ok_created"), "success");
+    setTimeout(()=> location.href = "login.html", 600);
+  } catch (err) {
+    console.error("signup error:", err);
+    showAlert(userFriendlyError(err));
   } finally {
-    setBusy(btn, false);
+    setBusy(false, submitBtn);
   }
 });
