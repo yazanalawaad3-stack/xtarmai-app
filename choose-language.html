@@ -15,18 +15,25 @@
     .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.9);}
     .langBtn.active{outline:2px solid rgba(120,140,255,.45);box-shadow:0 0 0 6px rgba(120,140,255,.12);}
     .sub{margin-top:10px;opacity:.8;font-size:14px;line-height:1.6;}
+    .topRow{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .langToggle{min-width:48px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;font-weight:700;}
+    .actions{display:flex;gap:10px;align-items:center;margin-top:14px;}
+    .actions .btn{flex:1;}
   </style>
 </head>
 <body>
   <main class="container">
     <div class="shell">
       <div class="brand">
-        <a class="logo" href="login.html">
-          <div class="badge">S</div>
-          <div class="title">
-            <strong data-i18n="choose.page_title"></strong>
-          </div>
-        </a>
+        <div class="topRow">
+          <a class="logo" href="login.html">
+            <div class="badge">S</div>
+            <div class="title">
+              <strong data-i18n="choose.page_title"></strong>
+            </div>
+          </a>
+          <button id="langToggle" class="langToggle" type="button">AR</button>
+        </div>
       </div>
 
       <section class="card">
@@ -55,9 +62,11 @@
             </button>
           </div>
 
-          <div id="msg" class="alert" hidden></div>
+          <div class="actions">
+            <a id="continueLink" class="btn primary" href="login.html" data-i18n="choose.continue"></a>
+          </div>
 
-          <div class="field" style="margin-top:14px">
+          <div class="field" style="margin-top:12px">
             <div class="row">
               <a class="mini" id="backLink" href="login.html" data-i18n="choose.back"></a>
               <div class="grow"></div>
