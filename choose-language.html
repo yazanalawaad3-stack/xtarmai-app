@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title data-i18n="choose.page_title"></title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .langGrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:6px;}
+    .langBtn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;}
+    .langBtn .meta{display:flex;flex-direction:column;gap:4px;text-align:start;}
+    .langBtn .meta strong{font-size:16px;}
+    .langBtn .meta span{opacity:.75;font-size:13px;}
+    .pill{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.9);}
+    .langBtn.active{outline:2px solid rgba(120,140,255,.45);box-shadow:0 0 0 6px rgba(120,140,255,.12);}
+    .sub{margin-top:10px;opacity:.8;font-size:14px;line-height:1.6;}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="shell">
+      <div class="brand">
+        <a class="logo" href="login.html">
+          <div class="badge">S</div>
+          <div class="title">
+            <strong data-i18n="choose.page_title"></strong>
+          </div>
+        </a>
+      </div>
+
+      <section class="card">
+        <div class="head">
+          <h1 class="h1" data-i18n="choose.h1"></h1>
+        </div>
+
+        <div class="body">
+          <p class="sub" data-i18n="choose.desc"></p>
+
+          <div class="langGrid">
+            <button id="btnAr" class="btn langBtn" type="button">
+              <div class="meta">
+                <strong data-i18n="choose.ar_title"></strong>
+                <span data-i18n="choose.ar_sub"></span>
+              </div>
+              <span class="pill">AR</span>
+            </button>
+
+            <button id="btnEn" class="btn langBtn" type="button">
+              <div class="meta">
+                <strong data-i18n="choose.en_title"></strong>
+                <span data-i18n="choose.en_sub"></span>
+              </div>
+              <span class="pill">EN</span>
+            </button>
+          </div>
+
+          <div id="msg" class="alert" hidden></div>
+
+          <div class="field" style="margin-top:14px">
+            <div class="row">
+              <a class="mini" id="backLink" href="login.html" data-i18n="choose.back"></a>
+              <div class="grow"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="assets/i18n.js"></script>
+  <script type="module" src="assets/choose-language.js"></script>
+</body>
+</html>
