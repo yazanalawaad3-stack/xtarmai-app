@@ -8,38 +8,42 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-<main class="container">
-  <div class="shell">
-    <section class="card">
-      <div class="head">
-        <h1 class="h1">أهلاً 👋</h1>
-        <p class="sub">تم تسجيل الدخول بنجاح. هذه صفحة اختبار.</p>
-      </div>
-      <div class="body">
-        <button id="logout" class="btn secondary">تسجيل الخروج</button>
-        <div id="msg" class="alert" hidden></div>
-      </div>
-    </section>
-
-    <div class="footer">
-      <span class="pill">بعدها نربط Dashboard مع profiles</span>
+  <main class="container">
+    <div class="shell">
+      <section class="card">
+        <div class="head">
+          <h1 class="h1">تم تسجيل الدخول ✅</h1>
+          <p class="sub">هذه صفحة تجريبية. بعدين نستبدلها بواجهة مشروعك.</p>
+        </div>
+        <div class="body">
+          <div id="who" class="hint" style="margin-bottom:10px"></div>
+          <button id="logout" class="btn secondary">تسجيل الخروج</button>
+          <div id="msg" class="alert" hidden></div>
+        </div>
+      </section>
     </div>
-  </div>
-</main>
+  </main>
 
-<script type="module">
-  import { supabase, showAlert } from "./assets/supabaseClient.js";
-  const btn = document.querySelector("#logout");
-  const msg = document.querySelector("#msg");
+  <script type="module">
+    import { supabase, loadSession, clearSession, showAlert } from "./assets/supabaseClient.js";
+    const btn = document.querySelector("#logout");
+    const msg = document.querySelector("#msg");
+    const who = document.querySelector("#who");
 
-  const { data } = await supabase.auth.getSession();
-  if (!data?.session?.user) location.href="login.html";
+    const s = loadSession();
+    if (!s?.token) location.href = "login.html";
 
-  btn.addEventListener("click", async ()=>{
-    await supabase.auth.signOut();
-    showAlert(msg, "تم تسجيل الخروج.", "ok");
-    setTimeout(()=> location.href="login.html", 500);
-  });
-</script>
+    who.textContent = `مستخدم: ${s.public_id} — هاتف: ${s.phone}`;
+
+    btn.addEventListener("click", async () => {
+      try {
+        // محاولة حذف الجلسة من قاعدة البيانات (قد تفشل إذا عندك RLS)
+        await supabase.from("user_sessions").delete().eq("token", s.token);
+      } catch {}
+      clearSession();
+      showAlert(msg, "تم تسجيل الخروج.", "ok");
+      setTimeout(() => location.href = "login.html", 400);
+    });
+  </script>
 </body>
 </html>

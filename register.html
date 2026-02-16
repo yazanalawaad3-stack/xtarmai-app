@@ -9,88 +9,90 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-<main class="container">
-  <div class="shell">
-    <div class="brand">
-      <a class="logo" href="register.html">
-        <div class="badge">S</div>
-        <div class="title">
-          <strong>إنشاء حساب</strong>
-          <span>Phone + Password + Invite</span>
-        </div>
-      </a>
-      <div class="chip">Mobile</div>
-    </div>
-
-    <section class="card">
-      <div class="head">
-        <h1 class="h1">تسجيل جديد</h1>
-        <p class="sub">اختر الدولة، أدخل رقم الهاتف، كلمة السر، كود الدعوة، ثم كابتشا بسيطة.</p>
-      </div>
-      <div class="body">
-
-        <div class="field">
-          <div class="label"><span>الدولة</span><span class="mini">اختر نداء بلدك</span></div>
-          <select id="country" aria-label="country"></select>
-        </div>
-
-        <div class="field">
-          <div class="label"><span>رقم الهاتف</span><span class="mini">بدون +</span></div>
-          <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
-          <div class="hint">سيتم حفظ الرقم بصيغة: 9617xxxxxxx (أرقام فقط).</div>
-        </div>
-
-        <div class="field">
-          <div class="label"><span>كلمة السر</span><span class="mini">حروف + أرقام</span></div>
-          <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
-          <div class="hint">على الأقل 8 أحرف وتحتوي حروف وأرقام.</div>
-        </div>
-
-        <div class="field">
-          <div class="label"><span>تأكيد كلمة السر</span><span class="mini">مرة ثانية</span></div>
-          <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
-        </div>
-
-        <div class="field">
-          <div class="label"><span>كود الدعوة</span><span class="mini">مطلوب</span></div>
-          <input id="invite" class="input" autocomplete="off" placeholder="مثال: TNEPXIKV" />
-          <div class="hint">بدون كود دعوة لن يتم إنشاء الحساب.</div>
-        </div>
-
-        <div class="field">
-          <div class="label">
-            <span>كابتشا أرقام</span>
-            <a id="refreshCaptcha" class="mini" href="#">تغيير</a>
+  <main class="container">
+    <div class="shell">
+      <div class="brand">
+        <a class="logo" href="register.html">
+          <div class="badge">S</div>
+          <div class="title">
+            <strong>إنشاء حساب</strong>
+            <span>Phone + Password + Invite</span>
           </div>
-          <div class="row">
-            <div class="grow input" style="display:flex;align-items:center;justify-content:center;">
-              <span class="code" id="captchaView">0000</span>
+        </a>
+        <div class="lang">Mobile UI</div>
+      </div>
+
+      <section class="card">
+        <div class="head">
+          <h1 class="h1">تسجيل جديد</h1>
+          <p class="sub">اختر نداء الدولة، أدخل رقم الهاتف، كلمة السر، كود الدعوة، ثم كابتشا بسيطة.</p>
+        </div>
+
+        <div class="body">
+
+          <div class="field">
+            <div class="label"><span>الدولة</span><span class="mini">اختر نداء بلدك</span></div>
+            <select id="country" class="input" aria-label="country"></select>
+          </div>
+
+          <div class="field">
+            <div class="label">
+              <span>رقم الهاتف</span>
+              <span class="mini">بدون +</span>
             </div>
-            <input id="captcha" class="input" inputmode="numeric" placeholder="اكتب الرقم" />
+            <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
+            <div class="hint">سيتم حفظ الرقم بصيغة أرقام فقط مثل: 9617xxxxxxx</div>
           </div>
-          <div class="hint">ملاحظة: هذه كابتشا بسيطة (للشكل). الأفضل لاحقاً Turnstile / reCAPTCHA.</div>
-        </div>
 
-        <button id="register" class="btn">إنشاء حساب</button>
+          <div class="field">
+            <div class="label"><span>كلمة السر</span><span class="mini">حروف + أرقام</span></div>
+            <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
+          </div>
 
-        <div id="msg" class="alert" hidden></div>
+          <div class="field">
+            <div class="label"><span>تأكيد كلمة السر</span><span class="mini">مرة ثانية</span></div>
+            <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
+          </div>
 
-        <div class="field" style="margin-top:14px">
-          <div class="row">
-            <div class="grow"><span class="mini">عندك حساب؟</span></div>
-            <a class="mini" href="login.html">تسجيل الدخول</a>
+          <div class="field">
+            <div class="label"><span>كود الدعوة</span><span class="mini">مطلوب</span></div>
+            <input id="invite" class="input" autocomplete="off" placeholder="مثال: LE0MXVWH" />
+            <div class="hint">بدون كود دعوة لن يتم إنشاء الحساب.</div>
+          </div>
+
+          <div class="field">
+            <div class="label">
+              <span>كابتشا أرقام</span>
+              <a id="refreshCaptcha" class="mini" href="#">تغيير</a>
+            </div>
+            <div class="row">
+              <div class="grow input" style="display:flex;align-items:center;justify-content:center;">
+                <span class="code" id="captchaView">0000</span>
+              </div>
+              <input id="captcha" class="input" inputmode="numeric" placeholder="اكتب الرقم" />
+            </div>
+            <div class="hint">هذه كابتشا بسيطة للتجربة. لاحقاً الأفضل Turnstile / reCAPTCHA.</div>
+          </div>
+
+          <button id="register" class="btn">إنشاء حساب</button>
+
+          <div id="msg" class="alert" hidden></div>
+
+          <div class="field" style="margin-top:14px">
+            <div class="row">
+              <div class="grow"><span class="mini">عندك حساب؟</span></div>
+              <a class="mini" href="login.html">تسجيل الدخول</a>
+            </div>
           </div>
         </div>
+      </section>
 
+      <div class="footer">
+        <span class="pill">✅ تسجيل بدون Auth</span>
       </div>
-    </section>
-
-    <div class="footer">
-      <span class="pill">⚠️ استخدم ANON فقط بالواجهة</span>
     </div>
-  </div>
-</main>
+  </main>
 
-<script type="module" src="assets/register.js"></script>
+  <script type="module" src="assets/register.js"></script>
 </body>
 </html>

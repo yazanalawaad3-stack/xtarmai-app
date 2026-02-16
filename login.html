@@ -9,61 +9,60 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-<main class="container">
-  <div class="shell">
-    <div class="brand">
-      <a class="logo" href="login.html">
-        <div class="badge">S</div>
-        <div class="title">
-          <strong>تسجيل الدخول</strong>
-          <span>Phone + Password</span>
-        </div>
-      </a>
-      <div class="chip">Mobile</div>
-    </div>
-
-    <section class="card">
-      <div class="head">
-        <h1 class="h1">تسجيل الدخول</h1>
-        <p class="sub">اختر الدولة، أدخل رقم الهاتف وكلمة السر.</p>
+  <main class="container">
+    <div class="shell">
+      <div class="brand">
+        <a class="logo" href="login.html">
+          <div class="badge">S</div>
+          <div class="title">
+            <strong>تسجيل الدخول</strong>
+            <span>Phone + Password</span>
+          </div>
+        </a>
+        <div class="lang">Mobile UI</div>
       </div>
-      <div class="body">
 
-        <div class="field">
-          <div class="label"><span>الدولة</span><span class="mini">نداء</span></div>
-          <select id="country" aria-label="country"></select>
+      <section class="card">
+        <div class="head">
+          <h1 class="h1">تسجيل الدخول</h1>
+          <p class="sub">اختر نداء الدولة ثم أدخل رقم الهاتف وكلمة السر.</p>
         </div>
 
-        <div class="field">
-          <div class="label"><span>رقم الهاتف</span><span class="mini">بدون +</span></div>
-          <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
-        </div>
+        <div class="body">
+          <div class="field">
+            <div class="label"><span>الدولة</span><span class="mini">نداء</span></div>
+            <select id="country" class="input" aria-label="country"></select>
+          </div>
 
-        <div class="field">
-          <div class="label"><span>كلمة السر</span><span class="mini">Password</span></div>
-          <input id="password" class="input" type="password" autocomplete="current-password" placeholder="********" />
-        </div>
+          <div class="field">
+            <div class="label"><span>رقم الهاتف</span><span class="mini">بدون +</span></div>
+            <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
+          </div>
 
-        <button id="login" class="btn">دخول</button>
+          <div class="field">
+            <div class="label"><span>كلمة السر</span><span class="mini">Password</span></div>
+            <input id="password" class="input" type="password" autocomplete="current-password" placeholder="********" />
+          </div>
 
-        <div id="msg" class="alert" hidden></div>
+          <button id="login" class="btn">دخول</button>
 
-        <div class="field" style="margin-top:14px">
-          <div class="row">
-            <div class="grow"><span class="mini">ما عندك حساب؟</span></div>
-            <a class="mini" href="register.html">إنشاء حساب</a>
+          <div id="msg" class="alert" hidden></div>
+
+          <div class="field" style="margin-top:14px">
+            <div class="row">
+              <div class="grow"><span class="mini">ما عندك حساب؟</span></div>
+              <a class="mini" href="register.html">إنشاء حساب</a>
+            </div>
           </div>
         </div>
+      </section>
 
+      <div class="footer">
+        <span class="pill">⚠️ لا تضع service_role</span>
       </div>
-    </section>
-
-    <div class="footer">
-      <span class="pill">✅ ستايل مناسب للجوال</span>
     </div>
-  </div>
-</main>
+  </main>
 
-<script type="module" src="assets/login.js"></script>
+  <script type="module" src="assets/login.js"></script>
 </body>
 </html>
