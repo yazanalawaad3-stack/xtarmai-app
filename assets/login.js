@@ -1,9 +1,36 @@
-import { supabase, normalizePhone, setBusy, showAlert, hideAlert, saveSession } from "./supabaseClient.js";
+import { supabase, normalizePhone, setBusy, showAlert, hideAlert } from "./supabaseClient.js";
 import { t } from "./i18n.js";
 
 const phoneEl = document.querySelector("#phone");
 const passEl = document.querySelector("#password");
 const submitBtn = document.querySelector("#login");
+
+
+const rememberEl = document.querySelector("#remember");
+const toggleBtn = document.querySelector("#togglePassword");
+
+function setPasswordVisible(visible){
+  if (!toggleBtn) return;
+  passEl.type = visible ? "text" : "password";
+  toggleBtn.textContent = visible ? "🙈" : "👁";
+  toggleBtn.setAttribute("aria-pressed", visible ? "true" : "false");
+}
+
+toggleBtn?.addEventListener("click", ()=>{
+  setPasswordVisible(passEl.type === "password");
+});
+
+function persistSession(session){
+  const remember = !!rememberEl?.checked;
+  const key = "app_session";
+  const payload = JSON.stringify(session);
+
+  // always set sessionStorage for current session
+  sessionStorage.setItem(key, payload);
+
+  if (remember) localStorage.setItem(key, payload);
+  else localStorage.removeItem(key);
+}
 
 let iti = null;
 
@@ -13,7 +40,7 @@ function initPhoneInput(){
     initialCountry: "lb",
     preferredCountries: ["lb","sa","ae","qa","kw","iq","jo","sy","eg","tr","us","gb"],
     separateDialCode: true,
-    autoPlaceholder: "polite",
+    autoPlaceholder: "off",
     nationalMode: true,
     utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js"
   });
@@ -47,7 +74,7 @@ submitBtn.addEventListener("click", async ()=>{
     const row = Array.isArray(data) ? data[0] : data;
     if (!row?.out_token) throw new Error("NO_TOKEN");
 
-    saveSession({
+    persistSession({
       token: row.out_token,
       user_id: row.out_user_id || null
     });
