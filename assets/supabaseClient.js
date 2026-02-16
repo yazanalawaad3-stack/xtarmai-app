@@ -1,6 +1,6 @@
 // ✅ ضع هنا فقط ANON KEY (public). لا تضع service_role أبداً داخل المتصفح.
 export const SUPABASE_URL = "https://bgtkvusbblriysozhdvu.supabase.co";
-export const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_KEY_HERE";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJndGt2dXNiYmxyaXlzb3poZHZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODg2MjgsImV4cCI6MjA4NjY2NDYyOH0.wP51mjoEwMCxlNte6io9jCxvRgKeqWt-k7lEPOvrPOk";
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
