@@ -1,36 +1,12 @@
-import { supabase, normalizePhone, setBusy, showAlert, hideAlert } from "./supabaseClient.js";
+import { supabase, normalizePhone, setBusy, showAlert, hideAlert, saveSession } from "./supabaseClient.js";
 import { t } from "./i18n.js";
 
 const phoneEl = document.querySelector("#phone");
 const passEl = document.querySelector("#password");
 const submitBtn = document.querySelector("#login");
-
-
 const rememberEl = document.querySelector("#remember");
-const toggleBtn = document.querySelector("#togglePassword");
+const toggleBtn = document.querySelector("#togglePass");
 
-function setPasswordVisible(visible){
-  if (!toggleBtn) return;
-  passEl.type = visible ? "text" : "password";
-  toggleBtn.textContent = visible ? "🙈" : "👁";
-  toggleBtn.setAttribute("aria-pressed", visible ? "true" : "false");
-}
-
-toggleBtn?.addEventListener("click", ()=>{
-  setPasswordVisible(passEl.type === "password");
-});
-
-function persistSession(session){
-  const remember = !!rememberEl?.checked;
-  const key = "app_session";
-  const payload = JSON.stringify(session);
-
-  // always set sessionStorage for current session
-  sessionStorage.setItem(key, payload);
-
-  if (remember) localStorage.setItem(key, payload);
-  else localStorage.removeItem(key);
-}
 
 let iti = null;
 
@@ -53,6 +29,24 @@ function userFriendlyError(err){
 }
 
 initPhoneInput();
+// init remember
+try {
+  const saved = localStorage.getItem("remember_phone");
+  if (saved) {
+    phoneEl.value = saved;
+    if (rememberEl) rememberEl.checked = true;
+  }
+} catch (_) {}
+
+// toggle password visibility
+if (toggleBtn) {
+  toggleBtn.addEventListener("click", () => {
+    const isPw = passEl.type === "password";
+    passEl.type = isPw ? "text" : "password";
+    toggleBtn.textContent = isPw ? "🙈" : "👁";
+  });
+}
+
 
 submitBtn.addEventListener("click", async ()=>{
   hideAlert();
@@ -74,7 +68,7 @@ submitBtn.addEventListener("click", async ()=>{
     const row = Array.isArray(data) ? data[0] : data;
     if (!row?.out_token) throw new Error("NO_TOKEN");
 
-    persistSession({
+    saveSession({
       token: row.out_token,
       user_id: row.out_user_id || null
     });

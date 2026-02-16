@@ -10,21 +10,6 @@ const captchaOutEl = document.querySelector("#captchaView");
 const refreshBtn = document.querySelector("#refreshCaptcha");
 const submitBtn = document.querySelector("#register");
 
-
-const toggleBtn = document.querySelector("#togglePassword");
-const toggleBtn2 = document.querySelector("#togglePassword2");
-
-function toggleInputVisibility(input, btn){
-  if (!input || !btn) return;
-  const visible = input.type === "password";
-  input.type = visible ? "text" : "password";
-  btn.textContent = visible ? "🙈" : "👁";
-  btn.setAttribute("aria-pressed", visible ? "true" : "false");
-}
-
-toggleBtn?.addEventListener("click", ()=> toggleInputVisibility(passEl, toggleBtn));
-toggleBtn2?.addEventListener("click", ()=> toggleInputVisibility(pass2El, toggleBtn2));
-
 let iti = null;
 
 function genCaptcha(){
@@ -56,7 +41,7 @@ function initPhoneInput(){
     initialCountry: "lb",
     preferredCountries: ["lb","sa","ae","qa","kw","iq","jo","sy","eg","tr","us","gb"],
     separateDialCode: true,
-    autoPlaceholder: "off",
+    autoPlaceholder: "polite",
     nationalMode: true,
     utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js"
   });
