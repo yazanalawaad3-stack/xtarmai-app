@@ -50,8 +50,7 @@ genCaptcha();
 refreshCaptchaBtn?.addEventListener("click", (e)=>{ e.preventDefault(); genCaptcha(); });
 
 function validatePassword(p){
-  if (!p || p.length < 8) return "كلمة السر لازم تكون 8 أحرف على الأقل";
-  if (!/[A-Za-z]/.test(p) || !/\d/.test(p)) return "كلمة السر لازم تحتوي حروف + أرقام";
+  if (!p || p.length < 8) return "كلمة السر لازم تكون 8 خانات على الأقل";
   return null;
 }
 
@@ -87,17 +86,20 @@ btn.addEventListener("click", async ()=>{
     setTimeout(()=> location.href="login.html", 700);
   } catch(e) {
     const m = e?.message || String(e);
-    // رسائل PostgreSQL اللي رفعناها
-    if (m.includes("INVALID_INVITE_CODE") || m.toLowerCase().includes("invalid invite")) {
+    console.error("signup_phone failed:", e);
+
+    const ml = m.toLowerCase();
+
+    if (m.includes("INVALID_INVITE_CODE") || ml.includes("invalid invite")) {
       showAlert(msgEl, "كود الدعوة غير صحيح.", "err");
-    } else if (m.includes("INVITE_REQUIRED")) {
-      showAlert(msgEl, "كود الدعوة مطلوب.", "err");
+    } else if (m.includes("INVITE_REQUIRED") || ml.includes("used_invite_code is required")) {
+      showAlert(msgEl, "كود الدعوة مطلوب للتسجيل.", "err");
     } else if (m.includes("WEAK_PASSWORD")) {
-      showAlert(msgEl, "كلمة السر ضعيفة. لازم 8 أحرف على الأقل وحروف + أرقام.", "err");
-    } else if (m.toLowerCase().includes("duplicate") || m.toLowerCase().includes("phone")) {
+      showAlert(msgEl, "كلمة السر لازم تكون 8 خانات على الأقل.", "err");
+    } else if (ml.includes("duplicate") || ml.includes("profiles_phone_key") || ml.includes("phone")) {
       showAlert(msgEl, "هذا الرقم مسجل مسبقًا.", "err");
     } else {
-      showAlert(msgEl, "خطأ: " + m, "err");
+      showAlert(msgEl, "حدث خطأ أثناء إنشاء الحساب. حاول مرة ثانية.", "err");
     }
   } finally {
     setBusy(btn, false);

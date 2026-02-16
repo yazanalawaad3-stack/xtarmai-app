@@ -61,14 +61,16 @@ btn.addEventListener("click", async ()=>{
       created_at: new Date().toISOString()
     });
 
-    showAlert(msgEl, "تم تسجيل الدخول ✅", "ok");
+    showAlert(msgEl, "تم تسجيل الدخول", "ok");
     setTimeout(()=> location.href="index.html", 400);
   } catch(e) {
     const m = e?.message || String(e);
+    console.error("login_phone failed:", e);
+
     if (m.includes("USER_NOT_FOUND")) showAlert(msgEl, "هذا الرقم غير مسجل.", "err");
     else if (m.includes("WRONG_PASSWORD")) showAlert(msgEl, "كلمة السر غير صحيحة.", "err");
-    else if (m.includes("NO_PASSWORD_SET")) showAlert(msgEl, "لا يوجد كلمة سر لهذا المستخدم.", "err");
-    else showAlert(msgEl, "خطأ: " + m, "err");
+    else if (m.includes("NO_PASSWORD_SET")) showAlert(msgEl, "لا توجد كلمة سر لهذا الحساب.", "err");
+    else showAlert(msgEl, "حدث خطأ أثناء تسجيل الدخول. حاول مرة ثانية.", "err");
   } finally {
     setBusy(btn, false);
   }

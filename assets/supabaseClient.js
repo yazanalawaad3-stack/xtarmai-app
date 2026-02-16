@@ -1,4 +1,3 @@
-// ✅ ضع هنا فقط ANON KEY (public). لا تضع service_role أبداً داخل المتصفح.
 export const SUPABASE_URL = "https://bgtkvusbblriysozhdvu.supabase.co";
 export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJndGt2dXNiYmxyaXlzb3poZHZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODg2MjgsImV4cCI6MjA4NjY2NDYyOH0.wP51mjoEwMCxlNte6io9jCxvRgKeqWt-k7lEPOvrPOk";
 
@@ -20,7 +19,7 @@ export const supabase = createClient(SUPABASE_URL, _KEY, {
 // فحص سريع للمفتاح حتى يعطيك سبب واضح قبل ما نرسل طلبات
 export function assertSupabaseKey() {
   if (!_KEY || _KEY.length < 20) {
-    return { ok: false, msg: "المفتاح فارغ أو قصير. تأكد أنك وضعت ANON KEY الصحيح في assets/supabaseClient.js" };
+    return { ok: false, msg: "إعدادات الاتصال غير صحيحة." };
   }
   const parts = _KEY.split(".");
   if (parts.length !== 3) {
