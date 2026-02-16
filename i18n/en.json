@@ -34,5 +34,15 @@
   },
   "errors": {
     "generic": "Something went wrong. Please try again."
+  },
+  "choose": {
+    "page_title": "Choose language",
+    "h1": "Choose language",
+    "desc": "Select your preferred language. You can change it anytime.",
+    "ar_title": "Arabic",
+    "ar_sub": "العربية (RTL)",
+    "en_title": "English",
+    "en_sub": "English (LTR)",
+    "back": "Back"
   }
 }
