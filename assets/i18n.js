@@ -20,7 +20,6 @@ function applyTranslations(){
     const key = el.getAttribute("data-i18n-placeholder");
     el.setAttribute("placeholder", t(key));
   });
-  // also update <title data-i18n="...">
   const titleEl = document.querySelector("title[data-i18n]");
   if (titleEl){
     titleEl.textContent = t(titleEl.getAttribute("data-i18n"));
@@ -45,27 +44,29 @@ function updateToggle(){
   btn.textContent = (CURRENT === "ar") ? "EN" : "AR";
 }
 
+export async function setLang(lang){
+  if (lang !== "ar" && lang !== "en") return;
+  localStorage.setItem(LS_LANG_KEY, lang);
+  setDocLang(lang);
+  await loadDict(lang);
+  applyTranslations();
+  updateToggle();
+  window.dispatchEvent(new CustomEvent("lang:changed", { detail: { lang } }));
+}
+
 export async function initI18n(){
   const saved = localStorage.getItem(LS_LANG_KEY);
   const nav = (navigator.language || "en").toLowerCase();
   const detected = saved || (nav.startsWith("ar") ? "ar" : "en");
 
-  setDocLang(detected);
-  await loadDict(detected);
-  applyTranslations();
-  updateToggle();
+  await setLang(detected);
 
   const btn = document.getElementById("langToggle");
-  if (btn){
+  if (btn && !btn.dataset.bound){
+    btn.dataset.bound = "1";
     btn.addEventListener("click", async ()=>{
       const next = (CURRENT === "ar") ? "en" : "ar";
-      localStorage.setItem(LS_LANG_KEY, next);
-      setDocLang(next);
-      await loadDict(next);
-      applyTranslations();
-      updateToggle();
-      // Let page scripts react if needed
-      window.dispatchEvent(new CustomEvent("lang:changed", { detail: { lang: next } }));
+      await setLang(next);
     });
   }
 }

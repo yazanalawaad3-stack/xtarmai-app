@@ -1,36 +1,13 @@
 {
-  "common": {
-    "phone": "Phone number",
-    "password": "Password"
-  },
-  "register": {
-    "page_title": "Create Account",
-    "h1": "Sign up",
-    "phone_ph": "03xxxxxx",
-    "password2": "Confirm password",
-    "invite_code": "Invite code",
-    "invite_ph": "Example: LE0MXVWH",
-    "captcha": "Captcha",
-    "captcha_ph": "Type the number",
-    "submit": "Create account",
-    "to_login": "Login",
-    "err_password_len": "Password must be at least 8 characters",
-    "err_password_match": "Passwords do not match",
-    "err_invite_required": "Invite code is required",
-    "err_captcha": "Captcha is incorrect",
-    "ok_created": "Account created successfully"
-  },
-  "login": {
-    "page_title": "Login",
-    "h1": "Login",
-    "phone_ph": "03xxxxxx",
-    "submit": "Sign in",
-    "to_register": "Create account",
-    "err_wrong": "Invalid phone or password",
-    "ok_login": "Logged in",
-    "remember": "Remember account"
-  },
-  "errors": {
-    "generic": "Something went wrong. Please try again."
+  "choose": {
+    "page_title": "Choose language",
+    "h1": "Choose language",
+    "desc": "Select your preferred language. You can change it anytime.",
+    "ar_title": "Arabic",
+    "ar_sub": "Right-to-left UI",
+    "en_title": "English",
+    "en_sub": "Left-to-right UI",
+    "continue": "Continue",
+    "back": "Back"
   }
 }
