@@ -1,0 +1,38 @@
+{
+  "common": {
+    "phone": "Phone number",
+    "password": "Password"
+  },
+  "register": {
+    "page_title": "Create Account",
+    "h1": "Sign up",
+    "phone_ph": "",
+    "password2": "Confirm password",
+    "invite_code": "Invite code",
+    "invite_ph": "",
+    "captcha": "Captcha",
+    "captcha_ph": "",
+    "submit": "Create account",
+    "to_login": "Login",
+    "err_password_len": "Password must be at least 8 characters",
+    "err_password_match": "Passwords do not match",
+    "err_invite_required": "Invite code is required",
+    "err_captcha": "Captcha is incorrect",
+    "ok_created": "Account created successfully",
+    "invite_hint": "An invite code is required to create an account.",
+    "captcha_refresh": "Refresh"
+  },
+  "login": {
+    "page_title": "Login",
+    "h1": "Login",
+    "phone_ph": "",
+    "submit": "Sign in",
+    "to_register": "Create account",
+    "err_wrong": "Invalid phone or password",
+    "ok_login": "Logged in",
+    "remember": "Remember account"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "common": {
+    "phone": "رقم الهاتف",
+    "password": "كلمة السر"
+  },
+  "register": {
+    "page_title": "إنشاء حساب",
+    "h1": "تسجيل جديد",
+    "phone_ph": "",
+    "password2": "تأكيد كلمة السر",
+    "invite_code": "كود الدعوة",
+    "invite_ph": "",
+    "captcha": "كابتشا",
+    "captcha_ph": "",
+    "submit": "إنشاء حساب",
+    "to_login": "تسجيل الدخول",
+    "err_password_len": "كلمة السر لازم تكون 8 خانات على الأقل",
+    "err_password_match": "كلمة السر غير متطابقة",
+    "err_invite_required": "كود الدعوة مطلوب",
+    "err_captcha": "كابتشا غير صحيحة",
+    "ok_created": "تم إنشاء الحساب بنجاح",
+    "invite_hint": "بدون كود دعوة لن يتم إنشاء الحساب.",
+    "captcha_refresh": "تغيير"
+  },
+  "login": {
+    "page_title": "تسجيل الدخول",
+    "h1": "تسجيل الدخول",
+    "phone_ph": "",
+    "submit": "دخول",
+    "to_register": "إنشاء حساب",
+    "err_wrong": "بيانات الدخول غير صحيحة",
+    "ok_login": "تم تسجيل الدخول",
+    "remember": "تذكر الحساب"
+  },
+  "errors": {
+    "generic": "تعذر تنفيذ العملية. حاول مرة أخرى."
+  }
+}
