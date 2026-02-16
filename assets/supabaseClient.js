@@ -14,11 +14,6 @@ export const supabase = createClient(SUPABASE_URL, _KEY, {
       apikey: _KEY,
       Authorization: `Bearer ${_KEY}`,
     }
-  },
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true
   }
 });
 
@@ -27,7 +22,6 @@ export function assertSupabaseKey() {
   if (!_KEY || _KEY.length < 20) {
     return { ok: false, msg: "المفتاح فارغ أو قصير. تأكد أنك وضعت ANON KEY الصحيح في assets/supabaseClient.js" };
   }
-  // JWT عادة فيه نقطتين (3 أجزاء)
   const parts = _KEY.split(".");
   if (parts.length !== 3) {
     return { ok: false, msg: "المفتاح ليس بصيغة JWT (يجب أن يحتوي 3 أجزاء مفصولة بنقاط). انسخه مرة ثانية بدون مسافات." };
@@ -47,12 +41,6 @@ export function normalizePhone(countryDial, localNumber){
   return dial + num;
 }
 
-// حيلة حتى نستخدم Auth email+password لكن ندخل/نخرج برقم هاتف:
-// ننشئ ايميل داخلي مبني على الهاتف
-export function phoneToEmail(phoneDigits){
-  return `${phoneDigits}@phone.local`;
-}
-
 export function setBusy(btn, busy, labelWhenBusy="...") {
   if (!btn) return;
   btn.disabled = !!busy;
@@ -70,4 +58,18 @@ export function hideAlert(el) {
   if (!el) return;
   el.hidden = true;
   el.textContent = "";
+}
+
+// ====== Session (بدون Supabase Auth) ======
+const LS_KEY = "app_session_v1";
+
+export function saveSession(session){
+  localStorage.setItem(LS_KEY, JSON.stringify(session));
+}
+export function loadSession(){
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); }
+  catch { return null; }
+}
+export function clearSession(){
+  localStorage.removeItem(LS_KEY);
 }
