@@ -4,8 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b1220" />
-  <title>تسجيل الدخول</title>
+  <title data-i18n="login.page_title"></title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -15,50 +16,48 @@
         <a class="logo" href="login.html">
           <div class="badge">S</div>
           <div class="title">
-            <strong>تسجيل الدخول</strong>
-            <span>Phone + Password</span>
+            <strong data-i18n="login.page_title"></strong>
           </div>
         </a>
-        <div class="lang">Mobile UI</div>
+        <button class="langSwitch" id="langToggle" type="button" aria-label="Language">AR</button>
       </div>
 
       <section class="card">
         <div class="head">
-          <h1 class="h1">تسجيل الدخول</h1>
-          <p class="sub">اختر نداء الدولة ثم أدخل رقم الهاتف وكلمة السر.</p>
+          <h1 class="h1" data-i18n="login.h1"></h1>
+          
         </div>
 
         <div class="body">
           <div class="field">
-            <div class="label"><span>الدولة</span><span class="mini">نداء</span></div>
-            <select id="country" class="input" aria-label="country"></select>
+            <div class="label"><span data-i18n="common.phone"></span><span class="mini">بدون +</span></div>
+            <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n-placeholder="login.phone_ph" />
           </div>
 
           <div class="field">
-            <div class="label"><span>رقم الهاتف</span><span class="mini">بدون +</span></div>
-            <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
-          </div>
-
-          <div class="field">
-            <div class="label"><span>كلمة السر</span><span class="mini">Password</span></div>
+            <div class="label"><span data-i18n="common.password"></span><span class="mini">Password</span></div>
             <input id="password" class="input" type="password" autocomplete="current-password" placeholder="********" />
           </div>
 
-          <button id="login" class="btn">دخول</button>
+          <button id="login" class="btn" type="button" data-i18n="login.submit">دخول</button>
 
           <div id="msg" class="alert" hidden></div>
 
           <div class="field" style="margin-top:14px">
             <div class="row">
-              <div class="grow"><span class="mini">ما عندك حساب؟</span></div>
-              <a class="mini" href="register.html">إنشاء حساب</a>
+              <div class="grow"></div>
+              <a class="mini" href="register.html" data-i18n="login.to_register"></a>
             </div>
           </div>
         </div>
       </section>
+
+      
     </div>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
+  <script type="module" src="assets/i18n.js"></script>
   <script type="module" src="assets/login.js"></script>
 </body>
 </html>

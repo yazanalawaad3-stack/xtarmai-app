@@ -4,8 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b1220" />
-  <title>إنشاء حساب</title>
+  <title data-i18n="register.page_title"></title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -15,79 +16,78 @@
         <a class="logo" href="register.html">
           <div class="badge">S</div>
           <div class="title">
-            <strong>إنشاء حساب</strong>
-            <span>Phone + Password + Invite</span>
+            <strong data-i18n="register.page_title"></strong>
           </div>
         </a>
-        <div class="lang">Mobile UI</div>
+        <button class="langSwitch" id="langToggle" type="button" aria-label="Language">AR</button>
       </div>
 
       <section class="card">
         <div class="head">
-          <h1 class="h1">تسجيل جديد</h1>
-          <p class="sub">اختر نداء الدولة، أدخل رقم الهاتف، كلمة السر، وكود الدعوة ثم أنشئ حسابك.</p>
+          <h1 class="h1" data-i18n="register.h1"></h1>
+          
         </div>
 
         <div class="body">
 
           <div class="field">
-            <div class="label"><span>الدولة</span><span class="mini">اختر نداء بلدك</span></div>
-            <select id="country" class="input" aria-label="country"></select>
-          </div>
-
-          <div class="field">
             <div class="label">
-              <span>رقم الهاتف</span>
+              <span data-i18n="common.phone"></span>
               <span class="mini">بدون +</span>
             </div>
-            <input id="phone" class="input" inputmode="tel" autocomplete="tel" placeholder="مثال: 03xxxxxx" />
+            <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n-placeholder="register.phone_ph" />
             <div class="hint">سيتم حفظ الرقم بصيغة أرقام فقط مثل: 9617xxxxxxx</div>
           </div>
 
           <div class="field">
-            <div class="label"><span>كلمة السر</span><span class="mini">8 خانات على الأقل</span></div>
+            <div class="label"><span data-i18n="common.password"></span><span class="mini">حروف + أرقام</span></div>
             <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
           </div>
 
           <div class="field">
-            <div class="label"><span>تأكيد كلمة السر</span><span class="mini">مرة ثانية</span></div>
+            <div class="label"><span data-i18n="register.password2"></span><span class="mini">مرة ثانية</span></div>
             <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
           </div>
 
           <div class="field">
-            <div class="label"><span>كود الدعوة</span><span class="mini">مطلوب</span></div>
-            <input id="invite" class="input" autocomplete="off" placeholder="مثال: LE0MXVWH" />
+            <div class="label"><span data-i18n="register.invite_code"></span><span class="mini">مطلوب</span></div>
+            <input id="invite" class="input" autocomplete="off" data-i18n-placeholder="register.invite_ph" />
             <div class="hint">بدون كود دعوة لن يتم إنشاء الحساب.</div>
           </div>
 
           <div class="field">
             <div class="label">
-              <span>كابتشا أرقام</span>
+              <span data-i18n="register.captcha"></span>
               <a id="refreshCaptcha" class="mini" href="#">تغيير</a>
             </div>
             <div class="row">
               <div class="grow input" style="display:flex;align-items:center;justify-content:center;">
                 <span class="code" id="captchaView">0000</span>
               </div>
-              <input id="captcha" class="input" inputmode="numeric" placeholder="اكتب الرقم" />
+              <input id="captcha" class="input" inputmode="numeric"  data-i18n-placeholder="register.captcha_ph" />
             </div>
-</div>
+            <div class="hint">هذه  للتجربة. لاحقاً الأفضل  / .</div>
+          </div>
 
-          <button id="register" class="btn">إنشاء حساب</button>
+          <button id="register" class="btn" type="button" data-i18n="register.submit">إنشاء حساب</button>
 
           <div id="msg" class="alert" hidden></div>
 
           <div class="field" style="margin-top:14px">
             <div class="row">
-              <div class="grow"><span class="mini">عندك حساب؟</span></div>
-              <a class="mini" href="login.html">تسجيل الدخول</a>
+              <div class="grow"></div>
+              <a class="mini" href="login.html" data-i18n="register.to_login"></a>
             </div>
           </div>
         </div>
       </section>
+
+      
     </div>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
+  <script type="module" src="assets/i18n.js"></script>
   <script type="module" src="assets/register.js"></script>
 </body>
 </html>
