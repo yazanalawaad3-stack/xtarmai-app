@@ -8,18 +8,14 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css" />
   <link rel="stylesheet" href="assets/styles.css" />
-
-  <style>
-    .inputWrap{position:relative}
-    .pwToggle{
-      position:absolute; left:10px; top:50%; transform:translateY(-50%);
-      background:transparent; border:0; cursor:pointer; font-size:16px; opacity:.85;
-    }
-    [dir="ltr"] .pwToggle{right:10px; left:auto}
-    .checkRow{display:flex; gap:10px; align-items:center; font-size:13px; opacity:.9; user-select:none}
-    .checkRow input{accent-color:#6b77ff}
-  </style>
-
+<style>
+.input-wrap{position:relative;}
+.eye-btn{position:absolute;top:50%;transform:translateY(-50%);background:transparent;border:0;padding:0 14px;font-size:16px;cursor:pointer;color:rgba(255,255,255,.75);}
+html[dir="rtl"] .eye-btn{left:10px;right:auto;}
+html[dir="ltr"] .eye-btn{right:10px;left:auto;}
+.remember{margin-top:10px;}
+.chk{display:flex;align-items:center;gap:10px;font-size:14px;opacity:.9;}
+</style>
 </head>
 <body>
   <main class="container">
@@ -43,25 +39,19 @@
         <div class="body">
           <div class="field">
             <div class="label"><span data-i18n="common.phone"></span></div>
-            <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n-placeholder="login.phone_ph" />
+            <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n- placeholder="" data-i18n-placeholder="" data-i18n-placeholder="login.phone_ph" />
           </div>
 
           <div class="field">
             <div class="label"><span data-i18n="common.password"></span></div>
-            <div class="inputWrap">
-              <input id="password" class="input" type="password" autocomplete="current-password" placeholder="********" />
-              <button id="togglePassword" class="pwToggle" type="button" aria-label="Show/Hide">👁</button>
-            </div>
+            <div class="input-wrap"><input id="password" class="input" type="password" autocomplete="current-password" placeholder="" /><button id="togglePass" class="eye-btn" type="button" aria-label="Toggle password">👁</button></div>
           </div>
 
-          <div class="field">
-            <label class="checkRow">
-              <input id="remember" type="checkbox" checked />
-              <span data-i18n="login.remember"></span>
-            </label>
-          </div>
+          <div class="field remember">
+  <label class="chk"><input id="remember" type="checkbox" /> <span data-i18n="login.remember"></span></label>
+</div>
 
-          <button id="login" class="btn" type="button" data-i18n="login.submit">دخول</button>
+<button id="login" class="btn" type="button" data-i18n="login.submit">دخول</button>
 
           <div id="msg" class="alert" hidden></div>
 

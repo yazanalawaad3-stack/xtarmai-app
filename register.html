@@ -8,18 +8,12 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css" />
   <link rel="stylesheet" href="assets/styles.css" />
-
-  <style>
-    .inputWrap{position:relative}
-    .pwToggle{
-      position:absolute; left:10px; top:50%; transform:translateY(-50%);
-      background:transparent; border:0; cursor:pointer; font-size:16px; opacity:.85;
-    }
-    [dir="ltr"] .pwToggle{right:10px; left:auto}
-    .checkRow{display:flex; gap:10px; align-items:center; font-size:13px; opacity:.9; user-select:none}
-    .checkRow input{accent-color:#6b77ff}
-  </style>
-
+<style>
+.input-wrap{position:relative;}
+.eye-btn{position:absolute;top:50%;transform:translateY(-50%);background:transparent;border:0;padding:0 14px;font-size:16px;cursor:pointer;color:rgba(255,255,255,.75);}
+html[dir="rtl"] .eye-btn{left:10px;right:auto;}
+html[dir="ltr"] .eye-btn{right:10px;left:auto;}
+</style>
 </head>
 <body>
   <main class="container">
@@ -47,45 +41,37 @@
               <span data-i18n="common.phone"></span>
               
             </div>
-            <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n-placeholder="register.phone_ph" />
-            <div class="hint">سيتم حفظ الرقم بصيغة أرقام فقط مثل: 9617xxxxxxx</div>
-          </div>
+            <input id="phone" class="input" inputmode="tel" autocomplete="tel" data-i18n-placeholder="" data-i18n-placeholder="register.phone_ph" />
+            </div>
 
           <div class="field">
             <div class="label"><span data-i18n="common.password"></span></div>
-            <div class="inputWrap">
-              <input id="password" class="input" type="password" autocomplete="new-password" placeholder="********" />
-              <button id="togglePassword" class="pwToggle" type="button" aria-label="Show/Hide">👁</button>
-            </div>
+            <div class="input-wrap"><input id="password" class="input" type="password" autocomplete="new-password" placeholder="" /><button id="togglePass" class="eye-btn" type="button" aria-label="Toggle password">👁</button></div>
           </div>
 
           <div class="field">
             <div class="label"><span data-i18n="register.password2"></span></div>
-            <div class="inputWrap">
-              <input id="password2" class="input" type="password" autocomplete="new-password" placeholder="********" />
-              <button id="togglePassword2" class="pwToggle" type="button" aria-label="Show/Hide">👁</button>
-            </div>
+            <div class="input-wrap"><input id="password2" class="input" type="password" autocomplete="new-password" placeholder="" /><button id="togglePass2" class="eye-btn" type="button" aria-label="Toggle password">👁</button></div>
           </div>
 
           <div class="field">
-            <div class="label"><span data-i18n="register.invite_code"></span><span class="mini">مطلوب</span></div>
-            <input id="invite" class="input" autocomplete="off" data-i18n-placeholder="register.invite_ph" />
-            <div class="hint">بدون كود دعوة لن يتم إنشاء الحساب.</div>
+            <div class="label"><span data-i18n="register.invite_code"></span></div>
+            <input id="invite" class="input" autocomplete="off" data-i18n-placeholder="" data-i18n-placeholder="register.invite_ph" />
+            <div class="hint" data-i18n="register.invite_hint"></div>
           </div>
 
           <div class="field">
             <div class="label">
               <span data-i18n="register.captcha"></span>
-              <a id="refreshCaptcha" class="mini" href="#">تغيير</a>
+              <a id="refreshCaptcha" class="mini" href="#" data-i18n="register.captcha_refresh">تغيير</a>
             </div>
             <div class="row">
               <div class="grow input" style="display:flex;align-items:center;justify-content:center;">
-                <span class="code" id="captchaView">0000</span>
+                <span class="code" id="captchaView" style="display:block;min-width:120px;text-align:center;letter-spacing:10px;white-space:nowrap;">0000</span>
               </div>
-              <input id="captcha" class="input" inputmode="numeric"  data-i18n-placeholder="register.captcha_ph" />
+              <input id="captcha" class="input" inputmode="numeric"  placeholder="" data-i18n-placeholder="register.captcha_ph" />
             </div>
-            
-          </div>
+            </div>
 
           <button id="register" class="btn" type="button" data-i18n="register.submit">إنشاء حساب</button>
 
