@@ -6,7 +6,7 @@
   "register": {
     "page_title": "إنشاء حساب",
     "h1": "تسجيل جديد",
-    "phone_ph": "مثال: 03xxxxxx",
+    "phone_ph": "03xxxxxx",
     "password2": "تأكيد كلمة السر",
     "invite_code": "كود الدعوة",
     "invite_ph": "مثال: LE0MXVWH",
@@ -23,11 +23,12 @@
   "login": {
     "page_title": "تسجيل الدخول",
     "h1": "تسجيل الدخول",
-    "phone_ph": "مثال: 03xxxxxx",
+    "phone_ph": "03xxxxxx",
     "submit": "دخول",
     "to_register": "إنشاء حساب",
     "err_wrong": "بيانات الدخول غير صحيحة",
-    "ok_login": "تم تسجيل الدخول"
+    "ok_login": "تم تسجيل الدخول",
+    "remember": "تذكر الحساب"
   },
   "errors": {
     "generic": "تعذر تنفيذ العملية. حاول مرة أخرى."

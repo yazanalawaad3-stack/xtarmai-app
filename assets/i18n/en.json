@@ -6,7 +6,7 @@
   "register": {
     "page_title": "Create Account",
     "h1": "Sign up",
-    "phone_ph": "Example: 03xxxxxx",
+    "phone_ph": "03xxxxxx",
     "password2": "Confirm password",
     "invite_code": "Invite code",
     "invite_ph": "Example: LE0MXVWH",
@@ -23,11 +23,12 @@
   "login": {
     "page_title": "Login",
     "h1": "Login",
-    "phone_ph": "Example: 03xxxxxx",
+    "phone_ph": "03xxxxxx",
     "submit": "Sign in",
     "to_register": "Create account",
     "err_wrong": "Invalid phone or password",
-    "ok_login": "Logged in"
+    "ok_login": "Logged in",
+    "remember": "Remember account"
   },
   "errors": {
     "generic": "Something went wrong. Please try again."
