@@ -1,16 +1,33 @@
-import { supabase, normalizePhone, phoneToEmail, setBusy, showAlert, hideAlert } from "./supabaseClient.js";
-import { COUNTRIES } from "./countries.js";
+import { supabase, normalizePhone, setBusy, showAlert, hideAlert, assertSupabaseKey } from "./supabaseClient.js";
+
+const COUNTRIES = [
+  { name: "لبنان", dial: "961" },
+  { name: "سوريا", dial: "963" },
+  { name: "السعودية", dial: "966" },
+  { name: "الإمارات", dial: "971" },
+  { name: "قطر", dial: "974" },
+  { name: "الكويت", dial: "965" },
+  { name: "العراق", dial: "964" },
+  { name: "الأردن", dial: "962" },
+  { name: "مصر", dial: "20" },
+  { name: "تركيا", dial: "90" },
+];
 
 const countryEl = document.querySelector("#country");
 const phoneEl = document.querySelector("#phone");
 const passEl = document.querySelector("#password");
 const pass2El = document.querySelector("#password2");
 const inviteEl = document.querySelector("#invite");
+
 const captchaView = document.querySelector("#captchaView");
 const captchaEl = document.querySelector("#captcha");
 const refreshCaptchaBtn = document.querySelector("#refreshCaptcha");
+
 const btn = document.querySelector("#register");
 const msgEl = document.querySelector("#msg");
+
+const keyCheck = assertSupabaseKey();
+if (!keyCheck.ok) showAlert(msgEl, keyCheck.msg, "err");
 
 function fillCountries(){
   for (const c of COUNTRIES){
@@ -30,7 +47,7 @@ function genCaptcha(){
   captchaEl.value = "";
 }
 genCaptcha();
-refreshCaptchaBtn.addEventListener("click", (e)=>{ e.preventDefault(); genCaptcha(); });
+refreshCaptchaBtn?.addEventListener("click", (e)=>{ e.preventDefault(); genCaptcha(); });
 
 function validatePassword(p){
   if (!p || p.length < 8) return "كلمة السر لازم تكون 8 أحرف على الأقل";
@@ -50,55 +67,39 @@ btn.addEventListener("click", async ()=>{
   const p2 = pass2El.value;
   const cap = String(captchaEl.value||"").trim();
 
-  if (!phone || phone.length < 8){
-    showAlert(msgEl, "اكتب رقم هاتف صحيح.", "err"); return;
-  }
+  if (!phone || phone.length < 8) return showAlert(msgEl, "اكتب رقم هاتف صحيح.", "err");
   const pwErr = validatePassword(p1);
-  if (pwErr){ showAlert(msgEl, pwErr, "err"); return; }
-  if (p1 !== p2){ showAlert(msgEl, "كلمتا السر غير متطابقتين", "err"); return; }
-  if (!invite){ showAlert(msgEl, "كود الدعوة مطلوب للتسجيل", "err"); return; }
-  if (cap !== captchaValue){ showAlert(msgEl, "كود الكابتشا غير صحيح", "err"); genCaptcha(); return; }
+  if (pwErr) return showAlert(msgEl, pwErr, "err");
+  if (p1 !== p2) return showAlert(msgEl, "كلمتا السر غير متطابقتين", "err");
+  if (!invite) return showAlert(msgEl, "كود الدعوة مطلوب للتسجيل.", "err");
+  if (cap !== captchaValue) { showAlert(msgEl, "كود الكابتشا غير صحيح", "err"); genCaptcha(); return; }
 
   setBusy(btn, true, "جارٍ إنشاء الحساب...");
-  try{
-    // 1) انشاء مستخدم Auth
-    const email = phoneToEmail(phone);
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: p1
+  try {
+    const { data, error } = await supabase.rpc("signup_phone", {
+      p_phone: phone,
+      p_password: p1,
+      p_used_invite_code: invite
     });
     if (error) throw error;
 
-    const userId = data?.user?.id;
-    if (!userId){
-      throw new Error("تم إنشاء الحساب لكن لا يوجد user id (قد يكون تأكيد ايميل مفعّل).");
-    }
-
-    // 2) إنشاء صف profiles (نفترض triggers تملأ public_id + invite_code + level + invited_by)
-    const { error: pErr } = await supabase
-      .from("profiles")
-      .insert({
-        user_id: userId,
-        phone,
-        used_invite_code: invite
-      });
-
-    if (pErr){
-      showAlert(
-        msgEl,
-        "تم إنشاء المستخدم ✅ لكن فشل إدخال profiles.\n" +
-        "غالباً السبب: RLS Policies أو التريغر لا يملأ الحقول NOT NULL (public_id / invite_code).\n" +
-        "الخطأ: " + (pErr.message || pErr),
-        "err"
-      );
-      return;
-    }
-
     showAlert(msgEl, "تم التسجيل بنجاح ✅ يمكنك تسجيل الدخول الآن.", "ok");
-    setTimeout(()=> location.href="login.html", 800);
-  }catch(e){
-    showAlert(msgEl, "خطأ: " + (e?.message || e), "err");
-  }finally{
+    setTimeout(()=> location.href="login.html", 700);
+  } catch(e) {
+    const m = e?.message || String(e);
+    // رسائل PostgreSQL اللي رفعناها
+    if (m.includes("INVALID_INVITE_CODE") || m.toLowerCase().includes("invalid invite")) {
+      showAlert(msgEl, "كود الدعوة غير صحيح.", "err");
+    } else if (m.includes("INVITE_REQUIRED")) {
+      showAlert(msgEl, "كود الدعوة مطلوب.", "err");
+    } else if (m.includes("WEAK_PASSWORD")) {
+      showAlert(msgEl, "كلمة السر ضعيفة. لازم 8 أحرف على الأقل وحروف + أرقام.", "err");
+    } else if (m.toLowerCase().includes("duplicate") || m.toLowerCase().includes("phone")) {
+      showAlert(msgEl, "هذا الرقم مسجل مسبقًا.", "err");
+    } else {
+      showAlert(msgEl, "خطأ: " + m, "err");
+    }
+  } finally {
     setBusy(btn, false);
   }
 });
