@@ -13,8 +13,15 @@
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1400);
   }
 
-  // Bottom nav active state
-  const navItems = qsa('.lux-nav-item');
+  // Bottom dock active state + indicator
+  const navItems = qsa('.dock-item');
+  const indicator = qs('.dock-indicator');
+  function updateIndicator(){
+    const activeIndex = Math.max(0, navItems.findIndex(b => b.classList.contains('active')));
+    const step = (indicator.parentElement.clientWidth - 20) / 5; // inner width minus padding
+    indicator.style.transform = `translateX(${activeIndex * step}px)`;
+  }
+
   navItems.forEach(btn => {
     btn.addEventListener('click', () => {
       navItems.forEach(b => b.classList.remove('active'));
@@ -28,16 +35,14 @@
         chat: 'Chat',
         profile: 'Profile'
       };
+      updateIndicator();
       toast(`${map[screen] || 'Ready'}`);
     });
   });
 
-  // Quick action pills
-  qsa('[data-toast]').forEach(el => {
-    el.addEventListener('click', () => toast(el.getAttribute('data-toast')));
-  });
-
-  // Demo add funds
+  window.addEventListener('resize', updateIndicator);
+  updateIndicator();
+  // (Main content removed per request)
   const addBtn = qs('#addFundsBtn');
   addBtn.addEventListener('click', () => {
     const el = qs('#demoBalance');

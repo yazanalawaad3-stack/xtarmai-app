@@ -68,111 +68,42 @@
       </div>
     </header>
 
-    <!-- Main content (placeholder sections) -->
+    <!-- Main content -->
     <main class="lux-main">
       <div class="container px-3">
-        <div class="lux-section">
-          <div class="lux-section-title">
-            <i class="fa-solid fa-chart-line me-2"></i>
-            Market Snapshot
-          </div>
-
-          <div class="row g-3">
-            <div class="col-6">
-              <div class="lux-card">
-                <div class="lux-card-top">
-                  <div class="lux-badge up">
-                    <i class="fa-solid fa-arrow-trend-up me-1"></i> +2.8%
-                  </div>
-                  <div class="lux-dot"></div>
-                </div>
-                <div class="lux-metric">BTC</div>
-                <div class="lux-metric-sub">$52,410</div>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="lux-card">
-                <div class="lux-card-top">
-                  <div class="lux-badge down">
-                    <i class="fa-solid fa-arrow-trend-down me-1"></i> -1.1%
-                  </div>
-                  <div class="lux-dot"></div>
-                </div>
-                <div class="lux-metric">ETH</div>
-                <div class="lux-metric-sub">$2,880</div>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="lux-card lux-card-wide">
-                <div class="d-flex align-items-center justify-content-between">
-                  <div>
-                    <div class="lux-card-title">Quick actions</div>
-                    <div class="lux-card-desc">One-tap tools designed for mobile</div>
-                  </div>
-                  <button class="lux-btn" id="addFundsBtn">
-                    <i class="fa-solid fa-circle-plus me-2"></i> Add Demo
-                  </button>
-                </div>
-
-                <div class="lux-actions mt-3">
-                  <button class="lux-pill" data-toast="Order placed (demo)">
-                    <i class="fa-solid fa-bolt me-2"></i> Instant Trade
-                  </button>
-                  <button class="lux-pill" data-toast="Portfolio refreshed">
-                    <i class="fa-solid fa-layer-group me-2"></i> Portfolio
-                  </button>
-                  <button class="lux-pill" data-toast="Risk check complete">
-                    <i class="fa-solid fa-gauge-high me-2"></i> Risk
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="lux-spacer"></div>
-
-          <div class="lux-section-title">
-            <i class="fa-solid fa-crown me-2"></i>
-            Premium Feel
-          </div>
-          <div class="lux-card">
-            <div class="lux-card-title">Elegant dark UI</div>
-            <div class="lux-card-desc">
-              Built for small screens with large tap targets, smooth motion, and premium contrast.
-            </div>
-            <div class="lux-progress mt-3">
-              <div class="lux-progress-bar" style="width: 68%;"></div>
-            </div>
-            <div class="d-flex justify-content-between mt-2 lux-muted">
-              <span>Activity</span><span>68%</span>
-            </div>
-          </div>
+        <div class="lux-empty">
+          <div class="lux-empty-icon"><i class="fa-solid fa-sparkles"></i></div>
+          <div class="lux-empty-title">Your workspace is ready</div>
+          <div class="lux-empty-sub">Use the navigation below to open Trading, Invest, Team, Chat, or Profile.</div>
         </div>
       </div>
     </main>
 
     <!-- Bottom navigation -->
-    <nav class="lux-nav">
-      <button class="lux-nav-item active" data-screen="trade" aria-label="Trade">
-        <i class="fa-solid fa-arrow-right-arrow-left"></i>
-        <span>Trading</span>
-      </button>
-      <button class="lux-nav-item" data-screen="invest" aria-label="Invest">
-        <i class="fa-solid fa-coins"></i>
-        <span>Invest</span>
-      </button>
-      <button class="lux-nav-item" data-screen="team" aria-label="My Team">
-        <i class="fa-solid fa-people-group"></i>
-        <span>My Team</span>
-      </button>
-      <button class="lux-nav-item" data-screen="chat" aria-label="Chat">
-        <i class="fa-solid fa-comments"></i>
-        <span>Chat</span>
-      </button>
-      <button class="lux-nav-item" data-screen="profile" aria-label="Profile">
-        <i class="fa-solid fa-user"></i>
-        <span>Profile</span>
-      </button>
+    <nav class="lux-dock" aria-label="Bottom navigation">
+      <div class="lux-dock-inner">
+        <button class="dock-item active" data-screen="trade" aria-label="Trading">
+          <span class="dock-ic"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+          <span class="dock-tx">Trading</span>
+        </button>
+        <button class="dock-item" data-screen="invest" aria-label="Invest">
+          <span class="dock-ic"><i class="fa-solid fa-coins"></i></span>
+          <span class="dock-tx">Invest</span>
+        </button>
+        <button class="dock-item dock-center" data-screen="team" aria-label="My Team">
+          <span class="dock-ic"><i class="fa-solid fa-people-group"></i></span>
+          <span class="dock-tx">My Team</span>
+        </button>
+        <button class="dock-item" data-screen="chat" aria-label="Chat">
+          <span class="dock-ic"><i class="fa-solid fa-comments"></i></span>
+          <span class="dock-tx">Chat</span>
+        </button>
+        <button class="dock-item" data-screen="profile" aria-label="Profile">
+          <span class="dock-ic"><i class="fa-solid fa-user"></i></span>
+          <span class="dock-tx">Profile</span>
+        </button>
+        <div class="dock-indicator" aria-hidden="true"></div>
+      </div>
     </nav>
 
     <!-- Toast -->
