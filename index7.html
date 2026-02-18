@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mobile Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app" role="application" aria-label="Dashboard">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-dot" aria-hidden="true"></div>
+        <div class="brand-text">
+          <div class="brand-title">Dashboard</div>
+          <div class="brand-sub">Welcome back</div>
+        </div>
+      </div>
+      <button class="icon-btn" type="button" aria-label="Notifications">
+        <i class="fa-regular fa-bell"></i>
+      </button>
+    </header>
+
+    <section class="content" aria-label="Main content">
+      <!-- Balance -->
+      <div class="card card-balance" aria-label="Account balance">
+        <div class="badge-dot" aria-hidden="true"></div>
+
+        <div class="balance-text">
+          <div class="kicker">Account balance</div>
+          <div class="amount">500.00 <span>USD</span></div>
+        </div>
+
+        <div class="card-ghost" aria-hidden="true">
+          <div class="ghost-rect"></div>
+          <div class="ghost-rect ghost-rect-2"></div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="section-head">
+        <div class="section-title">Quick actions</div>
+        <button class="link-btn" type="button">View all</button>
+      </div>
+
+      <div class="actions" aria-label="Actions">
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="action-label">Invest</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-wallet"></i></div>
+          <div class="action-label">Deposit</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-gauge"></i></div>
+          <div class="action-label">Withdraw</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-coins"></i></div>
+          <div class="action-label">Transfer</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-regular fa-user"></i></div>
+          <div class="action-label">2FA</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-headset"></i></div>
+          <div class="action-label">Support</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-gear"></i></div>
+          <div class="action-label">Settings</div>
+        </button>
+
+        <button class="action" type="button">
+          <div class="action-ico grad"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="action-label">Reports</div>
+        </button>
+      </div>
+
+      <!-- Recent activity (professional filler instead of removed sections) -->
+      <div class="section-head" style="margin-top:18px">
+        <div class="section-title">Recent activity</div>
+      </div>
+
+      <div class="list card" role="list" aria-label="Recent activity list">
+        <div class="list-item" role="listitem">
+          <div class="li-ico"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="li-body">
+            <div class="li-title">Deposit</div>
+            <div class="li-sub">Processing</div>
+          </div>
+          <div class="li-meta">—</div>
+        </div>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <div class="list-item" role="listitem">
+          <div class="li-ico"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="li-body">
+            <div class="li-title">Withdraw</div>
+            <div class="li-sub">No activity yet</div>
+          </div>
+          <div class="li-meta">—</div>
+        </div>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <div class="list-item" role="listitem">
+          <div class="li-ico"><i class="fa-solid fa-right-left"></i></div>
+          <div class="li-body">
+            <div class="li-title">Transfer</div>
+            <div class="li-sub">No activity yet</div>
+          </div>
+          <div class="li-meta">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom nav -->
+    <nav class="bottom-nav" aria-label="Bottom navigation">
+      <button class="nav-item is-active" type="button" aria-current="page">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" type="button">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Deposit</span>
+      </button>
+      <button class="nav-item" type="button">
+        <i class="fa-solid fa-gauge"></i>
+        <span>Withdraw</span>
+      </button>
+      <button class="nav-item" type="button">
+        <i class="fa-solid fa-right-left"></i>
+        <span>Transfer</span>
+      </button>
+      <button class="nav-item" type="button">
+        <i class="fa-regular fa-user"></i>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </main>
+</body>
+</html>
