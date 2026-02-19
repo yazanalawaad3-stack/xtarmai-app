@@ -17,6 +17,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="./styles.css" />
+
 </head>
 <body class="lux-body">
   <div class="lux-app">
@@ -27,20 +28,9 @@
         <div class="lux-balance-card">
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div>
-              <div class="lux-kicker">
-                <i class="fa-solid fa-wand-magic-sparkles me-2"></i>
-                Demo Balance
+              <div class="lux-balance"><span id="demoBalance">12,480.00</span>
               </div>
-              <div class="lux-balance">
-                <span class="lux-currency">$</span><span id="demoBalance">12,480.00</span>
-              </div>
-              <div class="lux-subtext">Simulated funds for practice trading</div>
-            </div>
-
-            <div class="lux-chip">
-              <i class="fa-solid fa-shield-halved me-2"></i>
-              Pro Mode
-            </div>
+</div>
           </div>
 
           <div class="lux-divider"></div>
@@ -71,10 +61,46 @@
     <!-- Main content -->
     <main class="lux-main">
       <div class="container px-3">
+
+        <!-- Referral / Invite friends card -->
+        <section class="lux-referral" aria-label="Invite friends">
+          <div class="lux-referral-card">
+            <div class="lux-referral-left">
+              <div class="lux-referral-title">
+                <span class="lux-referral-ico" aria-hidden="true"><i class="fa-solid fa-user-group"></i></span>
+                <span>Referral Program</span>
+              </div>
+              <div class="lux-referral-sub">Welcome! Earn USDT by inviting friends today</div>
+            </div>
+
+            <button class="lux-referral-btn" id="inviteFriendsBtn" type="button">
+              Invite Friends
+            </button>
+          </div>
+        </section>
+
         <div class="lux-empty">
-          <div class="lux-empty-icon"><i class="fa-solid fa-sparkles"></i></div>
-          <div class="lux-empty-title">Your workspace is ready</div>
-          <div class="lux-empty-sub">Use the navigation below to open Trading, Invest, Team, Chat, or Profile.</div>
+<div class="lux-quick-row">
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-wallet"></i></span>
+              <span class="lux-quick-label">My Wallet</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+              <span class="lux-quick-label">Transfer</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-gift"></i></span>
+              <span class="lux-quick-label">Rewards</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-chart-column"></i></span>
+              <span class="lux-quick-label">Stats</span>
+            </button>
+          </div>
         </div>
       </div>
     </main>
