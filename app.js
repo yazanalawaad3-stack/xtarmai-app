@@ -74,6 +74,29 @@
     });
   }
 
+  // Top actions
+  const settingsBtn = qs('#settingsBtn');
+  if(settingsBtn){
+    settingsBtn.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('lux:settings:open'));
+      toast('Settings');
+    });
+  }
+
+  const supportBtn = qs('#supportBtn');
+  if(supportBtn){
+    supportBtn.addEventListener('click', () => {
+      // If your app provides a support launcher, hook it here.
+      if(typeof window.openSupportChat === 'function'){
+        window.openSupportChat();
+        return;
+      }
+
+      window.dispatchEvent(new CustomEvent('lux:support:open'));
+      toast('Opening support…');
+    });
+  }
+
   // Subtle entrance motion
   window.addEventListener('load', () => {
     document.body.classList.add('lux-loaded');

@@ -22,6 +22,16 @@
 <body class="lux-body">
   <div class="lux-app">
 
+    <!-- Top center actions (outside cards) -->
+    <div class="lux-top-actions" aria-label="Top actions">
+      <button class="lux-gear-fab lux-top-action" id="settingsBtn" type="button" aria-label="Settings">
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+      </button>
+      <button class="lux-gear-fab lux-top-action" id="supportBtn" type="button" aria-label="Support">
+        <i class="fa-solid fa-headset" aria-hidden="true"></i>
+      </button>
+    </div>
+
     <!-- Top header -->
     <header class="lux-header">
       <div class="container px-3">
@@ -80,7 +90,9 @@
         </section>
 
         <div class="lux-empty">
-<div class="lux-quick-row">
+
+          <div class="lux-quick-wrap" aria-label="Quick actions">
+            <div class="lux-quick-row">
             <button class="lux-quick" type="button">
               <span class="lux-quick-ico"><i class="fa-solid fa-wallet"></i></span>
               <span class="lux-quick-label">My Wallet</span>
@@ -100,6 +112,7 @@
               <span class="lux-quick-ico"><i class="fa-solid fa-chart-column"></i></span>
               <span class="lux-quick-label">Stats</span>
             </button>
+            </div>
           </div>
         </div>
       </div>
