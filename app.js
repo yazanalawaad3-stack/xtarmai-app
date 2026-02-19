@@ -13,6 +13,28 @@
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1400);
   }
 
+  async function safeCopy(text){
+    try{
+      await navigator.clipboard.writeText(String(text));
+      return true;
+    }catch{
+      try{
+        const ta = document.createElement('textarea');
+        ta.value = String(text);
+        ta.setAttribute('readonly','');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return !!ok;
+      }catch{
+        return false;
+      }
+    }
+  }
+
   // Bottom dock active state + indicator
   const navItems = qsa('.dock-item');
   const indicator = qs('.dock-indicator');
@@ -64,14 +86,31 @@
       const referralCode = 'LUX-654';
       const referralLink = `${location.origin}${location.pathname}?ref=${encodeURIComponent(referralCode)}`;
 
-      try{
-        await navigator.clipboard.writeText(referralLink);
-        toast('Invite link copied ✅');
-      }catch{
-        // Clipboard may be blocked on some browsers/contexts
-        toast(`Referral code: ${referralCode}`);
-      }
+      const ok = await safeCopy(referralLink);
+      toast(ok ? 'Invite link copied ✅' : `Referral code: ${referralCode}`);
     });
+  }
+
+  // User ID chip
+  const userIdEl = qs('#userIdValue');
+  const copyUserIdBtn = qs('#copyUserIdBtn');
+  if(userIdEl){
+    const raw = (
+      window.LUX_USER_ID ||
+      window.USER_ID ||
+      localStorage.getItem('lux_user_id') ||
+      localStorage.getItem('user_id') ||
+      userIdEl.textContent
+    );
+    const uid = String(raw || '').trim() || '750899';
+    userIdEl.textContent = uid;
+
+    if(copyUserIdBtn){
+      copyUserIdBtn.addEventListener('click', async () => {
+        const ok = await safeCopy(uid);
+        toast(ok ? 'ID copied ✅' : 'Copy failed');
+      });
+    }
   }
 
   // Top actions

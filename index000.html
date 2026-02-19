@@ -22,7 +22,17 @@
 <body class="lux-body">
   <div class="lux-app">
 
-    <!-- Top center actions (outside cards) -->
+    <!-- Top overlay (outside cards) -->
+    <div class="lux-top-id" aria-label="User ID">
+      <div class="lux-id-chip" role="group" aria-label="User ID">
+        <span class="lux-id-label">ID</span>
+        <span class="lux-id-value" id="userIdValue">750899</span>
+        <button class="lux-id-copy" id="copyUserIdBtn" type="button" aria-label="Copy user ID">
+          <i class="fa-regular fa-copy" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
     <div class="lux-top-actions" aria-label="Top actions">
       <button class="lux-gear-fab lux-top-action" id="settingsBtn" type="button" aria-label="Settings">
         <i class="fa-solid fa-gear" aria-hidden="true"></i>
