@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Lux Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap (layout utilities) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./styles.css" />
+
+</head>
+<body class="lux-body">
+  <div class="lux-app">
+
+    <!-- Top header -->
+    <header class="lux-header">
+      <div class="container px-3">
+        <div class="lux-balance-card">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div>
+              <div class="lux-kicker">
+                <i class="fa-solid fa-wand-magic-sparkles me-2"></i>
+                Demo Balance
+              </div>
+              <div class="lux-balance">
+                <span class="lux-currency">$</span><span id="demoBalance">12,480.00</span>
+              </div>
+              <div class="lux-subtext">Simulated funds for practice trading</div>
+            </div>
+
+            <div class="lux-chip">
+              <i class="fa-solid fa-shield-halved me-2"></i>
+              Pro Mode
+            </div>
+          </div>
+
+          <div class="lux-divider"></div>
+
+          <!-- mini stats inside the same box -->
+          <div class="lux-mini-grid">
+            <div class="lux-mini">
+              <div class="lux-mini-label">Today's income</div>
+              <div class="lux-mini-value" id="todayIncome">$128.50</div>
+            </div>
+            <div class="lux-mini">
+              <div class="lux-mini-label">Total income</div>
+              <div class="lux-mini-value" id="totalIncome">$9,340.10</div>
+            </div>
+            <div class="lux-mini">
+              <div class="lux-mini-label">Team income</div>
+              <div class="lux-mini-value" id="teamIncome">$412.00</div>
+            </div>
+            <div class="lux-mini">
+              <div class="lux-mini-label">Total team income</div>
+              <div class="lux-mini-value" id="teamTotalIncome">$21,880.75</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="lux-main">
+      <div class="container px-3">
+
+        <!-- Referral / Invite friends card -->
+        <section class="lux-referral" aria-label="Invite friends">
+          <div class="lux-referral-card">
+            <div class="lux-referral-left">
+              <div class="lux-referral-title">
+                <span class="lux-referral-ico" aria-hidden="true"><i class="fa-solid fa-user-group"></i></span>
+                <span>Referral Program</span>
+              </div>
+              <div class="lux-referral-sub">Welcome! Earn USDT by inviting friends today</div>
+            </div>
+
+            <button class="lux-referral-btn" id="inviteFriendsBtn" type="button">
+              Invite Friends
+            </button>
+          </div>
+        </section>
+
+        <div class="lux-empty">
+<div class="lux-quick-row">
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-wallet"></i></span>
+              <span class="lux-quick-label">My Wallet</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+              <span class="lux-quick-label">Transfer</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-gift"></i></span>
+              <span class="lux-quick-label">Rewards</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-chart-column"></i></span>
+              <span class="lux-quick-label">Stats</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom navigation -->
+    <nav class="lux-dock" aria-label="Bottom navigation">
+      <div class="lux-dock-inner">
+        <button class="dock-item active" data-screen="trade" aria-label="Trading">
+          <span class="dock-ic"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+          <span class="dock-tx">Trading</span>
+        </button>
+        <button class="dock-item" data-screen="invest" aria-label="Invest">
+          <span class="dock-ic"><i class="fa-solid fa-coins"></i></span>
+          <span class="dock-tx">Invest</span>
+        </button>
+        <button class="dock-item dock-center" data-screen="team" aria-label="My Team">
+          <span class="dock-ic"><i class="fa-solid fa-people-group"></i></span>
+          <span class="dock-tx">My Team</span>
+        </button>
+        <button class="dock-item" data-screen="chat" aria-label="Chat">
+          <span class="dock-ic"><i class="fa-solid fa-comments"></i></span>
+          <span class="dock-tx">Chat</span>
+        </button>
+        <button class="dock-item" data-screen="profile" aria-label="Profile">
+          <span class="dock-ic"><i class="fa-solid fa-user"></i></span>
+          <span class="dock-tx">Profile</span>
+        </button>
+        <div class="dock-indicator" aria-hidden="true"></div>
+      </div>
+    </nav>
+
+    <!-- Toast -->
+    <div class="lux-toast" id="luxToast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="lux-toast-inner">
+        <i class="fa-solid fa-sparkles me-2"></i>
+        <span id="toastText">Done</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

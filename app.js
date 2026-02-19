@@ -42,16 +42,37 @@
 
   window.addEventListener('resize', updateIndicator);
   updateIndicator();
-  // (Main content removed per request)
+
+  // Optional demo actions (guarded)
   const addBtn = qs('#addFundsBtn');
-  addBtn.addEventListener('click', () => {
-    const el = qs('#demoBalance');
-    const raw = el.textContent.replace(/,/g,'');
-    const v = Number(raw);
-    const next = v + 250;
-    el.textContent = next.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    toast('Demo balance updated');
-  });
+  if(addBtn){
+    addBtn.addEventListener('click', () => {
+      const el = qs('#demoBalance');
+      const raw = el.textContent.replace(/,/g,'');
+      const v = Number(raw);
+      const next = v + 250;
+      el.textContent = next.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      toast('Demo balance updated');
+    });
+  }
+
+  // Invite friends / referral
+  const inviteBtn = qs('#inviteFriendsBtn');
+  if(inviteBtn){
+    inviteBtn.addEventListener('click', async () => {
+      // Replace these with real values from your backend/user session.
+      const referralCode = 'LUX-654';
+      const referralLink = `${location.origin}${location.pathname}?ref=${encodeURIComponent(referralCode)}`;
+
+      try{
+        await navigator.clipboard.writeText(referralLink);
+        toast('Invite link copied ✅');
+      }catch{
+        // Clipboard may be blocked on some browsers/contexts
+        toast(`Referral code: ${referralCode}`);
+      }
+    });
+  }
 
   // Subtle entrance motion
   window.addEventListener('load', () => {
