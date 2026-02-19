@@ -46,6 +46,11 @@
     <header class="lux-header">
       <div class="container px-3">
         <div class="lux-balance-card">
+
+          <div class="lux-usdt-mark" aria-hidden="true">
+            <img class="lux-usdt-coin-img" src="usdt_coin.webp" alt="" loading="lazy" />
+          </div>
+
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div>
               <div class="lux-balance"><span id="demoBalance">12,480.00</span>
@@ -113,9 +118,9 @@
               <span class="lux-quick-label">Transfer</span>
             </button>
 
-            <button class="lux-quick" type="button">
-              <span class="lux-quick-ico"><i class="fa-solid fa-gift"></i></span>
-              <span class="lux-quick-label">Rewards</span>
+            <button class="lux-quick" id="quickMyTeamBtn" type="button" aria-label="My Team">
+              <span class="lux-quick-ico"><i class="fa-solid fa-user-group"></i></span>
+              <span class="lux-quick-label">My Team</span>
             </button>
 
             <button class="lux-quick" type="button">
@@ -139,9 +144,9 @@
           <span class="dock-ic"><i class="fa-solid fa-coins"></i></span>
           <span class="dock-tx">Invest</span>
         </button>
-        <button class="dock-item dock-center" data-screen="team" aria-label="My Team">
-          <span class="dock-ic"><i class="fa-solid fa-people-group"></i></span>
-          <span class="dock-tx">My Team</span>
+        <button class="dock-item dock-center" data-screen="usdt" aria-label="USDT">
+          <span class="dock-ic"><i class="fa-solid fa-dollar-sign"></i></span>
+          <span class="dock-tx">USDT</span>
         </button>
         <button class="dock-item" data-screen="chat" aria-label="Chat">
           <span class="dock-ic"><i class="fa-solid fa-comments"></i></span>

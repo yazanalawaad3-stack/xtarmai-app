@@ -38,6 +38,22 @@
   // Bottom dock active state + indicator
   const navItems = qsa('.dock-item');
   const indicator = qs('.dock-indicator');
+
+  function activateDock(screen){
+    const btn = navItems.find(b => b.getAttribute('data-screen') === screen);
+    if(!btn) return;
+    navItems.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateIndicator();
+    const map = {
+      trade: 'Trading',
+      invest: 'Invest',
+      usdt: 'USDT',
+      chat: 'Chat',
+      profile: 'Profile'
+    };
+    toast(`${map[screen] || 'Ready'}`);
+  }
   function updateIndicator(){
     const activeIndex = Math.max(0, navItems.findIndex(b => b.classList.contains('active')));
     const step = (indicator.parentElement.clientWidth - 20) / 5; // inner width minus padding
@@ -46,19 +62,8 @@
 
   navItems.forEach(btn => {
     btn.addEventListener('click', () => {
-      navItems.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
       const screen = btn.getAttribute('data-screen');
-      const map = {
-        trade: 'Trading',
-        invest: 'Invest',
-        team: 'My Team',
-        chat: 'Chat',
-        profile: 'Profile'
-      };
-      updateIndicator();
-      toast(`${map[screen] || 'Ready'}`);
+      activateDock(screen);
     });
   });
 
@@ -133,6 +138,15 @@
 
       window.dispatchEvent(new CustomEvent('lux:support:open'));
       toast('Opening support…');
+    });
+  }
+
+  // Quick action: My Team
+  const quickMyTeamBtn = qs('#quickMyTeamBtn');
+  if(quickMyTeamBtn){
+    quickMyTeamBtn.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('lux:myteam:open'));
+      toast('My Team');
     });
   }
 
