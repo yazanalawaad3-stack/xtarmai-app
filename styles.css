@@ -481,6 +481,8 @@ body{
   border: 1px solid rgba(255,255,255,.10);
   background: rgba(255,255,255,.04);
   box-shadow: 0 12px 40px rgba(0,0,0,.35);
+
+  overflow: visible;
 }
 
 .dock-ic i{ font-size: 16px; }
@@ -510,9 +512,9 @@ body{
 }
 
 .dock-center .dock-ic{
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
+  
+  
+  
 }
 
 .dock-indicator{
@@ -532,6 +534,21 @@ body{
   .dock-item{ font-size: 11.5px; }
   .dock-ic{ width: 40px; height: 40px; }
   .dock-center .dock-ic{ width: 46px; height: 46px; }
+}
+
+
+/* Lottie icon in dock (Assets robot) */
+.dock-lottie{
+  pointer-events: none;
+  /* tint robot toward green to match dark UI */
+  filter: hue-rotate(95deg) saturate(1.35) brightness(1.08);
+}
+
+.dock-center .dock-lottie{
+  }
+
+.dock-item.active .assets-robot{
+  filter: hue-rotate(95deg) saturate(1.45) brightness(1.12) drop-shadow(0 0 10px rgba(46, 255, 140, .35));
 }
 
 /* Toast */
