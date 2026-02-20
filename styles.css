@@ -525,6 +525,16 @@ body{
     0 0 0 6px rgba(140,84,255,.10);
 }
 
+/* Green border for Assets button */
+.dock-item[data-screen="assets"] .dock-ic{
+  border: 2px solid var(--good);
+}
+
+.dock-item[data-screen="assets"].active .dock-ic{
+  border-color: var(--good);
+}
+
+
 .dock-center .dock-ic{
   
   
