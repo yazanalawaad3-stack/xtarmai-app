@@ -32,6 +32,8 @@ body{
   min-height: 100%;
   padding-top: 68px; /* space for top-center gear */
   padding-bottom: 112px; /* space for bottom nav */
+  position: relative;
+  z-index: 2;
 }
 
 .lux-header{
@@ -84,7 +86,7 @@ body{
     radial-gradient(circle at 35% 30%, rgba(110,255,208,.55), transparent 55%),
     radial-gradient(circle at 65% 70%, rgba(0,209,255,.22), transparent 60%);
   filter: blur(6px);
-  opacity: .95;
+  opacity: .85;
 }
 
 /* soft light wave across the card (like the reference) */
@@ -880,67 +882,72 @@ body{
   .lux-quick-label{ font-size: 12px; }
 }
 
-
-/* Ambient AI background (lightweight, full-page) */
-body{
-  position: relative;
-  overflow-x: hidden;
 }
 
-.ambient-bg{
+/* Full-page AI dust background (lightweight, stays behind content) */
+.lux-ai-bg{
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
-}
-
-.ambient-bg::before{
-  content: "";
-  position: absolute;
-  inset: -20%;
   background:
-    radial-gradient(closest-side at 20% 30%, rgba(0, 209, 255, .14), transparent 55%),
-    radial-gradient(closest-side at 80% 20%, rgba(140, 84, 255, .18), transparent 55%),
-    radial-gradient(closest-side at 60% 80%, rgba(0, 209, 255, .10), transparent 60%),
-    radial-gradient(closest-side at 30% 90%, rgba(255, 90, 200, .07), transparent 60%);
-  filter: blur(0px);
-  transform: translate3d(0,0,0);
-  animation: ambientDrift 18s ease-in-out infinite alternate;
-  opacity: .85;
+    radial-gradient(900px 520px at 18% 8%, rgba(140,84,255,.18), transparent 65%),
+    radial-gradient(820px 520px at 82% 10%, rgba(0,209,255,.14), transparent 70%),
+    radial-gradient(700px 520px at 50% 92%, rgba(140,84,255,.10), transparent 72%),
+
+    radial-gradient(26px 26px at 22% 36%, rgba(255,210,60,.10), transparent 70%),
+    radial-gradient(18px 18px at 64% 28%, rgba(0,209,255,.10), transparent 70%),
+    radial-gradient(22px 22px at 78% 58%, rgba(140,84,255,.09), transparent 70%),
+    radial-gradient(16px 16px at 38% 72%, rgba(255,210,60,.08), transparent 70%),
+    radial-gradient(20px 20px at 14% 78%, rgba(0,209,255,.08), transparent 70%),
+    radial-gradient(14px 14px at 88% 84%, rgba(255,210,60,.07), transparent 70%);
+  animation: aiGlowMove 18s ease-in-out infinite alternate;
 }
 
-.ambient-bg::after{
+.lux-ai-bg::before{
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(rgba(190, 220, 255, .28) 1px, transparent 1px),
-    radial-gradient(rgba(0, 209, 255, .18) 1.5px, transparent 1.5px);
-  background-size: 42px 42px, 140px 140px;
-  background-position: 0 0, 20px 60px;
-  animation: ambientDots 14s linear infinite, ambientTwinkle 6s ease-in-out infinite;
-  opacity: .42;
+    radial-gradient(circle at 1px 1px, rgba(255,210,60,.55) 0, rgba(255,210,60,.55) 1.2px, transparent 3px),
+    radial-gradient(circle at 1px 1px, rgba(255,210,60,.40) 0, rgba(255,210,60,.40) 1px, transparent 2.8px),
+    radial-gradient(circle at 1px 1px, rgba(255,210,60,.28) 0, rgba(255,210,60,.28) .9px, transparent 2.6px);
+  background-size: 70px 70px, 120px 120px, 180px 180px;
+  opacity: .78;
+  animation: aiParticlesDrift 18s linear infinite;
 }
 
 
-.lux-app{
-  position: relative;
-  z-index: 2;
+.lux-ai-bg::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.055) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.045) 0 1px, transparent 1px 72px),
+    radial-gradient(10px 10px at 30% 18%, rgba(255,210,60,.10), transparent 70%),
+    radial-gradient(8px 8px at 52% 44%, rgba(0,209,255,.10), transparent 70%),
+    radial-gradient(12px 12px at 74% 34%, rgba(140,84,255,.10), transparent 70%);
+  background-size: 72px 72px, 72px 72px, auto, auto, auto;
+  opacity: .24;
+  animation: aiGridMove 26s linear infinite;
 }
 
-@keyframes ambientDrift{
-  0%{ transform: translate3d(-2%, -1%, 0) scale(1.02); }
-  50%{ transform: translate3d(2%, 1%, 0) scale(1.06); }
-  100%{ transform: translate3d(-1%, 2%, 0) scale(1.03); }
+@keyframes aiParticlesDrift{
+  0%   { background-position: 0 0, 0 0, 0 0; }
+  100% { background-position: 260px 560px, -360px 420px, 460px -300px; }
 }
 
-@keyframes ambientDots{
-  from{ background-position: 0 0, 20px 60px; }
-  to{ background-position: 160px 260px, -120px 40px; }
+@keyframes aiGridMove{
+  0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 360px 0, 0 360px, 0 0, 0 0, 0 0; }
 }
 
-@keyframes ambientTwinkle{
-  0%,100%{ opacity: .36; }
-  50%{ opacity: .55; }
+@keyframes aiGlowMove{
+  0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 12% 8%, -10% 12%, 6% -6%, 60px 24px, -40px 18px, 34px -20px, -22px 40px, 26px 22px, -18px -28px; }
 }
 
+@media (prefers-reduced-motion: reduce){
+  .lux-ai-bg, .lux-ai-bg::before, .lux-ai-bg::after{ animation: none !important; }
+}
