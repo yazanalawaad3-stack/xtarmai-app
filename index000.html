@@ -46,32 +46,32 @@
     <div class="lux-menu" id="settingsMenu" role="menu" aria-label="Settings menu" aria-hidden="true">
       <button class="lux-menu-item" type="button" data-action="levels" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
-        <span class="lux-menu-tx">Levels</span>
+        <span class="lux-menu-tx">Account Status</span>
       </button>
       <button class="lux-menu-item" type="button" data-action="bonus" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-gift"></i></span>
-        <span class="lux-menu-tx">Bonus</span>
+        <span class="lux-menu-tx">Rewards</span>
       </button>
       <button class="lux-menu-item" type="button" data-action="email" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
-        <span class="lux-menu-tx">Email</span>
+        <span class="lux-menu-tx">Security Center</span>
       </button>
       <button class="lux-menu-item" type="button" data-action="language" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-language"></i></span>
-        <span class="lux-menu-tx">Language</span>
+        <span class="lux-menu-tx">Language Settings</span>
       </button>
       <div class="lux-menu-divider" aria-hidden="true"></div>
       <button class="lux-menu-item" type="button" data-action="about" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>
-        <span class="lux-menu-tx">About Us</span>
+        <span class="lux-menu-tx">About Platform</span>
       </button>
       <button class="lux-menu-item" type="button" data-action="how" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
-        <span class="lux-menu-tx">How It Works</span>
+        <span class="lux-menu-tx">Platform Guide</span>
       </button>
       <button class="lux-menu-item" type="button" data-action="download" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-download"></i></span>
-        <span class="lux-menu-tx">Download App</span>
+        <span class="lux-menu-tx">Get the App</span>
       </button>
     </div>
 
@@ -96,19 +96,19 @@
           <!-- mini stats inside the same box -->
           <div class="lux-mini-grid">
             <div class="lux-mini">
-              <div class="lux-mini-label">Today's income</div>
+              <div class="lux-mini-label">Today's Activity</div>
               <div class="lux-mini-value" id="todayIncome">$128.50</div>
             </div>
             <div class="lux-mini">
-              <div class="lux-mini-label">Total income</div>
+              <div class="lux-mini-label">Total Activity</div>
               <div class="lux-mini-value" id="totalIncome">$9,340.10</div>
             </div>
             <div class="lux-mini">
-              <div class="lux-mini-label">Team income</div>
+              <div class="lux-mini-label">Network Activity</div>
               <div class="lux-mini-value" id="teamIncome">$412.00</div>
             </div>
             <div class="lux-mini">
-              <div class="lux-mini-label">Total team income</div>
+              <div class="lux-mini-label">Total Network Activity</div>
               <div class="lux-mini-value" id="teamTotalIncome">$21,880.75</div>
             </div>
           </div>
@@ -126,9 +126,9 @@
             <div class="lux-referral-left">
               <div class="lux-referral-title">
                 <span class="lux-referral-ico" aria-hidden="true"><i class="fa-solid fa-user-group"></i></span>
-                <span>Referral Program</span>
+                <span>Invite Program</span>
               </div>
-              <div class="lux-referral-sub">Welcome! Earn USDT by inviting friends today</div>
+              <div class="lux-referral-sub">Welcome! Earn Assets by inviting friends today</div>
             </div>
 
             <button class="lux-referral-btn" id="inviteFriendsBtn" type="button">
@@ -143,7 +143,7 @@
             <div class="lux-quick-row">
             <button class="lux-quick" type="button">
               <span class="lux-quick-ico"><i class="fa-solid fa-wallet"></i></span>
-              <span class="lux-quick-label">My Wallet</span>
+              <span class="lux-quick-label">Wallet</span>
             </button>
 
             <button class="lux-quick" type="button">
@@ -151,14 +151,14 @@
               <span class="lux-quick-label">Transfer</span>
             </button>
 
-            <button class="lux-quick" id="quickMyTeamBtn" type="button" aria-label="My Team">
+            <button class="lux-quick" id="quickMyTeamBtn" type="button" aria-label="Network">
               <span class="lux-quick-ico"><i class="fa-solid fa-user-group"></i></span>
-              <span class="lux-quick-label">My Team</span>
+              <span class="lux-quick-label">Network</span>
             </button>
 
             <button class="lux-quick" type="button">
               <span class="lux-quick-ico"><i class="fa-solid fa-chart-column"></i></span>
-              <span class="lux-quick-label">Stats</span>
+              <span class="lux-quick-label">Analytics</span>
             </button>
             </div>
           </div>
@@ -169,21 +169,21 @@
     <!-- Bottom navigation -->
     <nav class="lux-dock" aria-label="Bottom navigation">
       <div class="lux-dock-inner">
-        <button class="dock-item active" data-screen="trade" aria-label="Trading">
+        <button class="dock-item active" data-screen="trade" aria-label="Market">
           <span class="dock-ic"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
-          <span class="dock-tx">Trading</span>
+          <span class="dock-tx">Market</span>
         </button>
-        <button class="dock-item" data-screen="invest" aria-label="Invest">
+        <button class="dock-item" data-screen="invest" aria-label="Portfolio">
           <span class="dock-ic"><i class="fa-solid fa-coins"></i></span>
-          <span class="dock-tx">Invest</span>
+          <span class="dock-tx">Portfolio</span>
         </button>
-        <button class="dock-item dock-center" data-screen="usdt" aria-label="USDT">
+        <button class="dock-item dock-center" data-screen="usdt" aria-label="Assets">
           <span class="dock-ic"><i class="fa-solid fa-dollar-sign"></i></span>
-          <span class="dock-tx">USDT</span>
+          <span class="dock-tx">Assets</span>
         </button>
-        <button class="dock-item" data-screen="chat" aria-label="Chat">
+        <button class="dock-item" data-screen="chat" aria-label="Community">
           <span class="dock-ic"><i class="fa-solid fa-comments"></i></span>
-          <span class="dock-tx">Chat</span>
+          <span class="dock-tx">Community</span>
         </button>
         <button class="dock-item" data-screen="profile" aria-label="Profile">
           <span class="dock-ic"><i class="fa-solid fa-user"></i></span>
