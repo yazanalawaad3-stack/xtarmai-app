@@ -485,6 +485,15 @@ body{
 
 .dock-ic i{ font-size: 16px; }
 
+/* USDT dock icon color */
+.dock-item[data-screen="usdt"] .dock-ic i{
+  color: var(--good);
+}
+.dock-item[data-screen="usdt"].active .dock-ic i{
+  color: var(--good);
+}
+
+
 .dock-item:active{ transform: translateY(1px); }
 
 .dock-item.active{
