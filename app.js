@@ -169,6 +169,8 @@
         bonus: { ev: 'lux:settings:bonus', label: 'Bonus' },
         email: { ev: 'lux:settings:email', label: 'Email' },
         language: { ev: 'lux:settings:language', label: 'Language' },
+        about: { ev: 'lux:settings:about', label: 'About Us' },
+        how: { ev: 'lux:settings:how', label: 'How It Works' },
         download: { ev: 'lux:settings:download', label: 'Download App' }
       };
       const cfg = map[action];
