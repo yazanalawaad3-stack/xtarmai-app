@@ -124,15 +124,18 @@ body{
   line-height: 1.12;
   font-weight: 700;
   letter-spacing: -0.6px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .lux-balance-unit{
-  margin-left: 10px;
-  font-size: 20px;
+  margin-left: 0;
+  font-size: .42em;
   font-weight: 700;
-  letter-spacing: .2px;
+  letter-spacing: .3px;
   color: var(--text);
-  opacity: .95;
+  opacity: .9;
 }
 
 .lux-currency{
