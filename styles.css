@@ -126,6 +126,15 @@ body{
   letter-spacing: -0.6px;
 }
 
+.lux-balance-unit{
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: var(--text);
+  opacity: .95;
+}
+
 .lux-currency{
   font-size: 18px;
   opacity:.9;
