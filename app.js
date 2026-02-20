@@ -120,24 +120,80 @@
 
   // Top actions
   const settingsBtn = qs('#settingsBtn');
+  const settingsMenu = qs('#settingsMenu');
+
+  function positionSettingsMenu(){
+    if(!settingsBtn || !settingsMenu) return;
+    const r = settingsBtn.getBoundingClientRect();
+    const top = Math.round(r.bottom + 10);
+    const left = Math.max(10, Math.round(r.right - settingsMenu.offsetWidth));
+    settingsMenu.style.top = `${top}px`;
+    settingsMenu.style.left = `${left}px`;
+    settingsMenu.style.right = 'auto';
+  }
+
+  function openSettingsMenu(){
+    if(!settingsMenu) return;
+    positionSettingsMenu();
+    settingsMenu.classList.add('show');
+    settingsMenu.setAttribute('aria-hidden','false');
+  }
+
+  function closeSettingsMenu(){
+    if(!settingsMenu) return;
+    settingsMenu.classList.remove('show');
+    settingsMenu.setAttribute('aria-hidden','true');
+  }
+
+  function toggleSettingsMenu(){
+    if(!settingsMenu) return;
+    const isOpen = settingsMenu.classList.contains('show');
+    isOpen ? closeSettingsMenu() : openSettingsMenu();
+  }
+
   if(settingsBtn){
-    settingsBtn.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('lux:settings:open'));
-      toast('Settings');
+    settingsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleSettingsMenu();
     });
   }
 
-  const supportBtn = qs('#supportBtn');
-  if(supportBtn){
-    supportBtn.addEventListener('click', () => {
-      // If your app provides a support launcher, hook it here.
-      if(typeof window.openSupportChat === 'function'){
-        window.openSupportChat();
-        return;
+  if(settingsMenu){
+    settingsMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = e.target.closest('.lux-menu-item');
+      if(!item) return;
+      const action = item.getAttribute('data-action');
+      const map = {
+        levels: { ev: 'lux:settings:levels', label: 'Levels' },
+        bonus: { ev: 'lux:settings:bonus', label: 'Bonus' },
+        email: { ev: 'lux:settings:email', label: 'Email' },
+        language: { ev: 'lux:settings:language', label: 'Language' },
+        download: { ev: 'lux:settings:download', label: 'Download App' }
+      };
+      const cfg = map[action];
+      if(cfg){
+        window.dispatchEvent(new CustomEvent(cfg.ev));
+        toast(cfg.label);
       }
+      closeSettingsMenu();
+    });
+  }
 
-      window.dispatchEvent(new CustomEvent('lux:support:open'));
-      toast('Opening support…');
+  document.addEventListener('click', () => closeSettingsMenu());
+  window.addEventListener('resize', () => {
+    if(settingsMenu && settingsMenu.classList.contains('show')) positionSettingsMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeSettingsMenu();
+  });
+
+  const notifyBtn = qs('#notifyBtn');
+  if(notifyBtn){
+    notifyBtn.addEventListener('click', () => {
+      closeSettingsMenu();
+      window.dispatchEvent(new CustomEvent('lux:notifications:open'));
+      toast('Notifications');
     });
   }
 
