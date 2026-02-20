@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Lux Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap (layout utilities) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./styles.css" />
+
+</head>
+<body class="lux-body">
+  <div class="lux-ai-bg" aria-hidden="true"></div>
+  <div class="lux-app">
+
+    <!-- Top overlay (outside cards) -->
+    <div class="lux-top-id" aria-label="User ID">
+      <div class="lux-id-chip" role="group" aria-label="User ID">
+        <span class="lux-id-label">ID</span>
+        <span class="lux-id-value" id="userIdValue">750899</span>
+        <button class="lux-id-copy" id="copyUserIdBtn" type="button" aria-label="Copy user ID">
+          <i class="fa-regular fa-copy" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="lux-top-actions" aria-label="Top actions">
+      <button class="lux-gear-fab lux-top-action" id="notifyBtn" type="button" aria-label="Notifications">
+        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+      </button>
+      <button class="lux-gear-fab lux-top-action" id="settingsBtn" type="button" aria-label="Settings">
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Settings dropdown (opened from gear) -->
+    <div class="lux-menu" id="settingsMenu" role="menu" aria-label="Settings menu" aria-hidden="true">
+      <button class="lux-menu-item" type="button" data-action="member" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-user-check"></i></span>
+        <span class="lux-menu-tx">Member</span>
+      </button>
+      <button class="lux-menu-item" type="button" data-action="rewards" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-trophy"></i></span>
+        <span class="lux-menu-tx">Rewards</span>
+      </button>
+      <button class="lux-menu-item" type="button" data-action="security" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+        <span class="lux-menu-tx">Security Center</span>
+      </button>
+      <button class="lux-menu-item" type="button" data-action="language" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-language"></i></span>
+        <span class="lux-menu-tx">Language Settings</span>
+      </button>
+      <div class="lux-menu-divider" aria-hidden="true"></div>
+      <button class="lux-menu-item" type="button" data-action="about" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>
+        <span class="lux-menu-tx">About Platform</span>
+      </button>
+      <button class="lux-menu-item" type="button" data-action="guide" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
+        <span class="lux-menu-tx">Platform Guide</span>
+      </button>
+      <button class="lux-menu-item" type="button" data-action="getapp" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-download"></i></span>
+        <span class="lux-menu-tx">Get the App</span>
+      </button>
+    </div>
+
+    <!-- Top header -->
+    <header class="lux-header">
+      <div class="container px-3">
+        <div class="lux-balance-card">
+
+          <div class="lux-usdt-mark" aria-hidden="true">
+            <img class="lux-usdt-coin-img" src="usdt_coin.webp" alt="" loading="lazy" />
+          </div>
+
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div>
+	              <div class="lux-balance">
+	                <span id="demoBalance">12,480.00</span>
+	                <span class="lux-balance-unit">USDT</span>
+	              </div>
+</div>
+          </div>
+
+          <div class="lux-divider"></div>
+
+          <!-- mini stats inside the same box -->
+          <div class="lux-mini-grid">
+            <div class="lux-mini">
+              <div class="lux-mini-label">Today's Activity</div>
+              <div class="lux-mini-value" id="todayIncome">$128.50</div>
+            </div>
+            <div class="lux-mini">
+              <div class="lux-mini-label">Total Activity</div>
+              <div class="lux-mini-value" id="totalIncome">$9,340.10</div>
+            </div>
+            <div class="lux-mini">
+              <div class="lux-mini-label">Network Activity</div>
+              <div class="lux-mini-value" id="teamIncome">$412.00</div>
+            </div>
+            <div class="lux-mini">
+              <div class="lux-mini-label">Total Network Activity</div>
+              <div class="lux-mini-value" id="teamTotalIncome">$21,880.75</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="lux-main">
+      <div class="container px-3">
+
+        <!-- Referral / Invite friends card -->
+        <section class="lux-referral" aria-label="Invite friends">
+          <div class="lux-referral-card">
+            <div class="lux-referral-left">
+              <div class="lux-referral-title">
+                <span class="lux-referral-ico" aria-hidden="true"><i class="fa-solid fa-users"></i></span>
+                <span>Invite Program</span>
+              </div>
+              <div class="lux-referral-sub">Welcome! Invite your friends now</div>
+            </div>
+
+            <button class="lux-referral-btn" id="inviteFriendsBtn" type="button">
+              Invite Friends
+            </button>
+          </div>
+        </section>
+
+        <div class="lux-empty">
+
+          <div class="lux-quick-wrap" aria-label="Quick actions">
+            <div class="lux-quick-row">
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-wallet"></i></span>
+              <span class="lux-quick-label">Wallet</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-hand-holding"></i></span>
+              <span class="lux-quick-label">Transfer</span>
+            </button>
+
+            <button class="lux-quick" id="quickNetworkBtn" type="button" aria-label="Network">
+              <span class="lux-quick-ico"><i class="fa-solid fa-users"></i></span>
+              <span class="lux-quick-label">Network</span>
+            </button>
+
+            <button class="lux-quick" type="button">
+              <span class="lux-quick-ico"><i class="fa-solid fa-chart-column"></i></span>
+              <span class="lux-quick-label">Analytics</span>
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom navigation -->
+    <nav class="lux-dock" aria-label="Bottom navigation">
+      <div class="lux-dock-inner">
+        <button class="dock-item active" data-screen="market" aria-label="Market">
+          <span class="dock-ic"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></span>
+          <span class="dock-tx">Market</span>
+        </button>
+        <button class="dock-item" data-screen="Power" aria-label="Power">
+          <span class="dock-ic"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></span>
+          <span class="dock-tx">Power</span>
+        </button>
+        <button class="dock-item dock-center" data-screen="Ai assets" aria-label="Ai Assets">
+          <span class="dock-ic">
+            <dotlottie-player class="dock-lottie assets-robot" src="data:application/octet-stream;base64,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" background="transparent" speed="1" loop autoplay></dotlottie-player>
+          </span>
+          <span class="dock-tx">Ai Assets</span>
+        </button>
+        <button class="dock-item" data-screen="community" aria-label="Community">
+          <span class="dock-ic"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
+          <span class="dock-tx">Community</span>
+        </button>
+        <button class="dock-item" data-screen="profile" aria-label="Profile">
+          <span class="dock-ic"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></span>
+          <span class="dock-tx">Profile</span>
+        </button>
+        <div class="dock-indicator" aria-hidden="true"></div>
+      </div>
+    </nav>
+
+    <!-- Toast -->
+    <div class="lux-toast" id="luxToast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="lux-toast-inner">
+        <i class="fa-solid fa-sparkles me-2"></i>
+        <span id="toastText">Done</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"></script>
+  <script nomodule src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
