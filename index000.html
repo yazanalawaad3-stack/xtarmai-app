@@ -44,15 +44,15 @@
 
     <!-- Settings dropdown (opened from gear) -->
     <div class="lux-menu" id="settingsMenu" role="menu" aria-label="Settings menu" aria-hidden="true">
-      <button class="lux-menu-item" type="button" data-action="levels" role="menuitem">
-        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-id-card"></i></span>
-        <span class="lux-menu-tx">Account Status</span>
+      <button class="lux-menu-item" type="button" data-action="member" role="menuitem">
+        <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-user-check"></i></span>
+        <span class="lux-menu-tx">Member</span>
       </button>
-      <button class="lux-menu-item" type="button" data-action="bonus" role="menuitem">
+      <button class="lux-menu-item" type="button" data-action="rewards" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-trophy"></i></span>
         <span class="lux-menu-tx">Rewards</span>
       </button>
-      <button class="lux-menu-item" type="button" data-action="email" role="menuitem">
+      <button class="lux-menu-item" type="button" data-action="security" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
         <span class="lux-menu-tx">Security Center</span>
       </button>
@@ -65,11 +65,11 @@
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></span>
         <span class="lux-menu-tx">About Platform</span>
       </button>
-      <button class="lux-menu-item" type="button" data-action="how" role="menuitem">
+      <button class="lux-menu-item" type="button" data-action="guide" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
         <span class="lux-menu-tx">Platform Guide</span>
       </button>
-      <button class="lux-menu-item" type="button" data-action="download" role="menuitem">
+      <button class="lux-menu-item" type="button" data-action="getapp" role="menuitem">
         <span class="lux-menu-ic" aria-hidden="true"><i class="fa-solid fa-download"></i></span>
         <span class="lux-menu-tx">Get the App</span>
       </button>
@@ -147,11 +147,11 @@
             </button>
 
             <button class="lux-quick" type="button">
-              <span class="lux-quick-ico"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+              <span class="lux-quick-ico"><i class="fa-solid fa-hand-holding"></i></span>
               <span class="lux-quick-label">Transfer</span>
             </button>
 
-            <button class="lux-quick" id="quickMyTeamBtn" type="button" aria-label="Network">
+            <button class="lux-quick" id="quickNetworkBtn" type="button" aria-label="Network">
               <span class="lux-quick-ico"><i class="fa-solid fa-users"></i></span>
               <span class="lux-quick-label">Network</span>
             </button>
@@ -169,24 +169,24 @@
     <!-- Bottom navigation -->
     <nav class="lux-dock" aria-label="Bottom navigation">
       <div class="lux-dock-inner">
-        <button class="dock-item active" data-screen="trade" aria-label="Market">
-          <span class="dock-ic"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+        <button class="dock-item active" data-screen="market" aria-label="Market">
+          <span class="dock-ic"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></span>
           <span class="dock-tx">Market</span>
         </button>
-        <button class="dock-item" data-screen="invest" aria-label="Portfolio">
-          <span class="dock-ic"><i class="fa-solid fa-coins"></i></span>
+        <button class="dock-item" data-screen="portfolio" aria-label="Portfolio">
+          <span class="dock-ic"><i class="fa-solid fa-coins" aria-hidden="true"></i></span>
           <span class="dock-tx">Portfolio</span>
         </button>
-        <button class="dock-item dock-center" data-screen="usdt" aria-label="Assets">
-          <span class="dock-ic"><i class="fa-solid fa-wallet"></i></span>
+        <button class="dock-item dock-center" data-screen="assets" aria-label="Assets">
+          <span class="dock-ic"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
           <span class="dock-tx">Assets</span>
         </button>
-        <button class="dock-item" data-screen="chat" aria-label="Community">
-          <span class="dock-ic"><i class="fa-solid fa-comments"></i></span>
+        <button class="dock-item" data-screen="community" aria-label="Community">
+          <span class="dock-ic"><i class="fa-solid fa-comments" aria-hidden="true"></i></span>
           <span class="dock-tx">Community</span>
         </button>
         <button class="dock-item" data-screen="profile" aria-label="Profile">
-          <span class="dock-ic"><i class="fa-solid fa-id-badge"></i></span>
+          <span class="dock-ic"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></span>
           <span class="dock-tx">Profile</span>
         </button>
         <div class="dock-indicator" aria-hidden="true"></div>

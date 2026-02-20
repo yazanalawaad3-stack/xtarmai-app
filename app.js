@@ -45,14 +45,9 @@
     navItems.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     updateIndicator();
-    const map = {
-      trade: 'Trading',
-      invest: 'Invest',
-      usdt: 'USDT',
-      chat: 'Chat',
-      profile: 'Profile'
-    };
-    toast(`${map[screen] || 'Ready'}`);
+    const labelEl = btn.querySelector('.dock-tx');
+    const label = (labelEl ? labelEl.textContent : (btn.getAttribute('aria-label') || screen));
+    toast(String(label).trim() || 'Ready');
   }
   function updateIndicator(){
     const activeIndex = Math.max(0, navItems.findIndex(b => b.classList.contains('active')));
@@ -163,21 +158,33 @@
       e.stopPropagation();
       const item = e.target.closest('.lux-menu-item');
       if(!item) return;
-      const action = item.getAttribute('data-action');
-      const map = {
-        levels: { ev: 'lux:settings:levels', label: 'Levels' },
-        bonus: { ev: 'lux:settings:bonus', label: 'Bonus' },
-        email: { ev: 'lux:settings:email', label: 'Email' },
-        language: { ev: 'lux:settings:language', label: 'Language' },
-        about: { ev: 'lux:settings:about', label: 'About Us' },
-        how: { ev: 'lux:settings:how', label: 'How It Works' },
-        download: { ev: 'lux:settings:download', label: 'Download App' }
-      };
-      const cfg = map[action];
-      if(cfg){
-        window.dispatchEvent(new CustomEvent(cfg.ev));
-        toast(cfg.label);
-      }
+const actionRaw = String(item.getAttribute('data-action') || '').trim();
+if(!actionRaw) return;
+
+const action = ({
+  levels: 'member',
+  bonus: 'rewards',
+  email: 'security',
+  how: 'guide',
+  download: 'getapp'
+}[actionRaw] || actionRaw);
+
+const txEl = qs('.lux-menu-tx', item);
+const label = String(txEl ? txEl.textContent : (action || 'Done')).trim();
+
+const evMap = {
+  member: ['lux:settings:member', 'lux:settings:levels'],
+  rewards: ['lux:settings:rewards', 'lux:settings:bonus'],
+  security: ['lux:settings:security', 'lux:settings:email'],
+  language: ['lux:settings:language'],
+  about: ['lux:settings:about'],
+  guide: ['lux:settings:guide', 'lux:settings:how'],
+  getapp: ['lux:settings:getapp', 'lux:settings:download']
+};
+
+const events = evMap[action] || [`lux:settings:${action}`];
+events.forEach(ev => window.dispatchEvent(new CustomEvent(ev)));
+toast(label);
       closeSettingsMenu();
     });
   }
@@ -199,16 +206,29 @@
     });
   }
 
-  // Quick action: My Team
-  const quickMyTeamBtn = qs('#quickMyTeamBtn');
-  if(quickMyTeamBtn){
-    quickMyTeamBtn.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('lux:myteam:open'));
-      toast('My Team');
-    });
-  }
+  // Quick actions
+const quickNetworkBtn = qs('#quickNetworkBtn');
+if(quickNetworkBtn){
+  quickNetworkBtn.addEventListener('click', () => {
+    // Keep backward compatibility with the old event name.
+    window.dispatchEvent(new CustomEvent('lux:network:open'));
+    window.dispatchEvent(new CustomEvent('lux:myteam:open'));
+    const labelEl = qs('.lux-quick-label', quickNetworkBtn);
+    toast(String(labelEl ? labelEl.textContent : 'Network').trim() || 'Network');
+  });
+}
 
-  // Subtle entrance motion
+// Show a toast for other quick buttons too (Wallet / Transfer / Analytics)
+qsa('.lux-quick').forEach(btn => {
+  if(btn.id) return; // handled above
+  btn.addEventListener('click', () => {
+    const labelEl = qs('.lux-quick-label', btn);
+    const label = String(labelEl ? labelEl.textContent : (btn.getAttribute('aria-label') || 'Done')).trim();
+    toast(label);
+  });
+});
+
+// Subtle entrance motion
   window.addEventListener('load', () => {
     document.body.classList.add('lux-loaded');
   });
