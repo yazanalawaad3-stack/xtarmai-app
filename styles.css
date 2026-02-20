@@ -951,3 +951,42 @@ body{
 @media (prefers-reduced-motion: reduce){
   .lux-ai-bg, .lux-ai-bg::before, .lux-ai-bg::after{ animation: none !important; }
 }
+
+/* ---- OPAQUE CARDS (keep background effect behind, but not visible through cards) ---- */
+.lux-balance-card{
+  background: linear-gradient(180deg, rgba(30,34,64,.96), rgba(14,16,34,.95)) !important;
+}
+
+.lux-mini{
+  background: rgba(12,14,26,.92) !important;
+  backdrop-filter: none !important;
+}
+
+.lux-referral-card{
+  background:
+    radial-gradient(900px 220px at 20% 0%, rgba(155, 115, 255, .32), transparent 62%),
+    radial-gradient(900px 220px at 90% 30%, rgba(95, 210, 255, .20), transparent 65%),
+    linear-gradient(180deg, rgba(48, 60, 140, .96), rgba(18, 22, 55, .95)) !important;
+}
+
+.lux-quick{
+  background: rgba(12,14,26,.88) !important;
+  backdrop-filter: none !important;
+}
+.lux-quick:hover{
+  background: rgba(12,14,26,.92) !important;
+}
+
+/* Optional: make top chips less see-through */
+.lux-id-chip,
+.lux-gear-fab{
+  background:
+    radial-gradient(140px 70px at 30% 0%, rgba(140,84,255,.22), transparent 70%),
+    rgba(12,14,26,.86) !important;
+  backdrop-filter: none !important;
+}
+
+/* Optional: reduce see-through on bottom dock without removing the style */
+.lux-dock-inner{
+  background: rgba(10,12,18,.92) !important;
+}
